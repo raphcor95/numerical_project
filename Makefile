@@ -25,7 +25,8 @@ GEN_SRCS = Tests/TestRandom.cpp \
            RandomGenerators/DiscreteGenerators/DiscreteGenerator.cpp \
            RandomGenerators/ContinuousGenerators/ContinuousGenerator.cpp \
            RandomGenerators/ContinuousGenerators/Normal.cpp \
-           RandomGenerators/ContinuousGenerators/Exponential.cpp
+           RandomGenerators/ContinuousGenerators/Exponential.cpp \
+		   Utils/Output.cpp
 
 GEN_OBJS = $(GEN_SRCS:.cpp=.o)
 
@@ -39,5 +40,5 @@ test_random: $(GEN_OBJS)
 # Utilities
 all: test_random
 
-clean:
+clean_random:
 	rm -f $(GEN_OBJS) test_random

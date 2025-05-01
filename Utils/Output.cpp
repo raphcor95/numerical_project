@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <string>
 #include "Output.h"
 
 // Default Constructor
@@ -15,7 +16,7 @@ Output::~Output()
 }
 
 // Method to convert a matrix in to a csv file
-void Vec2CSV(
+void Output::Vec2CSV(
     const std::vector<std::vector<double>>& matrix, 
     const std::string& filename
 )
