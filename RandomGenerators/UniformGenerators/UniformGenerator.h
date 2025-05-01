@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../RandomGenerators/RandomGenerator.h"
+#include "RandomGenerator.h"
 
 class UniformGenerator : public RandomGenerator
 {
