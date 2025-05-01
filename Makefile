@@ -4,13 +4,17 @@
 CXX = g++
 CXXFLAGS = -std=c++17 -Wall \
                -I./RandomGenerators \
-               -I./RandomGenerators/UniformGenerators
+               -I./RandomGenerators/UniformGenerators \
+			   -I./PDE
+
+all: test_random test_pde
+
 
 # ------------------------------
 # Tests
 # ------------------------------
 
-# Generators
+# Generators -------------------------------------------
 GEN_SRCS = Tests/TestRandom.cpp \
 		   RandomGenerators/RandomGenerator.cpp \
            RandomGenerators/UniformGenerators/EcuyerCombined.cpp \
@@ -33,12 +37,27 @@ GEN_OBJS = $(GEN_SRCS:.cpp=.o)
 test_random: $(GEN_OBJS)
 	$(CXX) $(CXXFLAGS) -o $@ $(GEN_OBJS)
 
+
+# PDE --------------------------------------------------
+PDE_SRCS = Tests/TestPDE.cpp \
+			PDE/PDEGrid2D.cpp \
+			PDE/R1R1Function.cpp \
+			PDE/R2R1Function.cpp \
+			Utils/Output.cpp
+
+PDE_OBJS = $(PDE_SRCS:.cpp=.o)
+
+test_pde: $(PDE_OBJS)
+	$(CXX) $(CXXFLAGS) -o $@ $(PDE_OBJS)
+
+
+
 # Pattern rule to compile .cpp to .o
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-# Utilities
-all: test_random
-
 clean_random:
 	rm -f $(GEN_OBJS) test_random
+
+clean_pde:
+	rm -f $(PDE_OBJS) test_pde
