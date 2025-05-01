@@ -45,6 +45,7 @@ public:
 	~PDEGrid2D();
 
 	virtual void FillNodes();
+	void OutputNodes();
 
 	double GetTimeZeroNodeValue(double spot);
 

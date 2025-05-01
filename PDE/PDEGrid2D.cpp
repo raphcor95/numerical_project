@@ -1,6 +1,8 @@
 #include "PDEGrid2D.h"
+#include "Output.h"
 #include <exception>
 #include <vector>
+#include <string>
 
 PDEGrid2D::PDEGrid2D(
 	double Maturity,
@@ -64,6 +66,15 @@ void PDEGrid2D::FillNodes()
 {
 	FillRightBoundary();
 	FillTopAndBottomBoundary();
+}
+
+void PDEGrid2D::OutputNodes()
+{
+	// Create the output instance
+	Output* Out = new Output();
+	std::string outpath = "Outputs/";
+	std:cout << "Outputting to the following folder: " << outpath + "pde_grid.csv" << std::endl;
+	Out->Vec2CSV(this->Nodes, outpath + "pde_grid.csv");
 }
 
 double PDEGrid2D::GetTimeZeroNodeValue(double spot)
