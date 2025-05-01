@@ -15,7 +15,7 @@ int main()
     double sMin = 0.0;
     double sMax = 1000.0;
     double spotStep = 1;
-    double timeStep = 252;
+    double nTimeSteps = 252;
     R2R1Function* VarianceFunction = new BSVariance(vol);
     R2R1Function* TrendFunction = new BSTrend(rate);
     R2R1Function* ActualizationFunction = new BSActualization(rate);
@@ -29,7 +29,7 @@ int main()
         maturity,
         sMin,
         sMax,
-        timeStep,
+        nTimeSteps,
         spotStep,
         VarianceFunction,
         TrendFunction,
@@ -40,8 +40,11 @@ int main()
         RightBoundaryCondition
     );
 
-    /* Solving for Price */
+    // /* Solving for Price */
     BSCallPricingGrid->FillNodes();
+    double result = BSCallPricingGrid->GetTimeZeroNodeValue(spot);
+    std::cout << "Call price: " << result << std::endl;
+    BSCallPricingGrid->OutputNodes();
 
     return 0;
 }
