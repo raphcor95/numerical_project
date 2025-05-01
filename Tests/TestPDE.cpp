@@ -1,6 +1,6 @@
 #include <iostream>
 #include <fstream>
-#include "../PDE/PDEGrid2D.h"
+#include "../Pricers/PDE/PDEGrid2D.h"
 
 int main()
 {

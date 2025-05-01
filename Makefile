@@ -6,7 +6,7 @@ CXXFLAGS = -std=c++17 -Wall \
 			   -I./Utils \
                -I./RandomGenerators \
                -I./RandomGenerators/UniformGenerators \
-			   -I./PDE
+			   -I./Pricers/PDE
 
 all: test_random test_pde
 
@@ -41,9 +41,9 @@ test_random: $(GEN_OBJS)
 
 # PDE --------------------------------------------------
 PDE_SRCS = Tests/TestPDE.cpp \
-			PDE/PDEGrid2D.cpp \
-			PDE/R1R1Function.cpp \
-			PDE/R2R1Function.cpp \
+			Pricers/PDE/PDEGrid2D.cpp \
+			Pricers/PDE/R1R1Function.cpp \
+			Pricers/PDE/R2R1Function.cpp \
 			Utils/Output.cpp
 
 PDE_OBJS = $(PDE_SRCS:.cpp=.o)
