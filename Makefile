@@ -3,6 +3,7 @@
 # Compiler
 CXX = g++
 CXXFLAGS = -std=c++17 -Wall \
+			   -I./Utils \
                -I./RandomGenerators \
                -I./RandomGenerators/UniformGenerators \
 			   -I./PDE
