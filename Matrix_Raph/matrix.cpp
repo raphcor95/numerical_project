@@ -100,6 +100,46 @@ Matrix Matrix::removeFirstAndLastRow() const {
     return result;
 }
 
+// ----------------- LU Decomposition -------------
+std::pair<Matrix, Matrix> Matrix::luDecomposition() const {
+    if (!isSquare()) {
+        throw std::invalid_argument("To have a LU decomposition, you must have a square matrix.");
+    }
+
+    Matrix L(rows, rows);
+    Matrix U(rows, rows);
+
+    for (size_t i = 0; i < rows; ++i) {
+        // Find the Upper Triangular matrix
+        for (size_t k = i; k < rows; ++k) {
+            double sum = 0.0;
+            for (size_t j = 0; j < i; ++j) {
+                sum += L(i, j) * U(j, k);
+            }
+            U(i, k) = (*this)(i, k) - sum;
+        }
+
+        // Find the Lower Triangular matrix
+        for (size_t k = i; k < rows; ++k) {
+            if (i == k) {
+                L(i, i) = 1.0; // Diagonal matrix with only 1
+            } else {
+                double sum = 0.0;
+                for (size_t j = 0; j < i; ++j) {
+                    sum += L(k, j) * U(j, i);
+                }
+                if (U(i, i) == 0.0) {
+                    throw std::runtime_error("One of the pivots encountered during the decomposition was equal to zero !");
+                }
+                L(k, i) = ((*this)(k, i) - sum) / U(i, i);
+            }
+        }
+    }
+
+    return std::make_pair(L, U);
+}
+
+
 // -------------------------------------------------------------------
 //  Methods only for the first question but are not used
 // -------------------------------------------------------------------

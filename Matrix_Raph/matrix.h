@@ -28,6 +28,9 @@ public:
         return data[row][col];
     }
 
+    // --- LU Decomposition ---
+    std::pair<Matrix, Matrix> luDecomposition() const;
+
     // --- Display ---
     void print() const;
 
