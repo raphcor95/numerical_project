@@ -17,7 +17,7 @@ Output::~Output()
 
 // Method to convert a matrix in to a csv file
 void Output::Vec2CSV(
-    const std::vector<std::vector<double>>& matrix, 
+    const std::vector< std::vector<double> >& matrix, 
     const std::string& filename
 )
 {   
