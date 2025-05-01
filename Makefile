@@ -6,9 +6,10 @@ CXXFLAGS = -std=c++17 -Wall \
 			   -I./Utils \
                -I./RandomGenerators \
                -I./RandomGenerators/UniformGenerators \
-			   -I./Pricers/PDE
+			   -I./Pricers/PDE \
+			   -I./Processes
 
-all: test_random test_pde
+all: test_random test_pde test_proc
 
 
 # ------------------------------
@@ -53,12 +54,39 @@ test_pde: $(PDE_OBJS)
 
 
 
+# Processes ----------------------------------------------
+PROC_SRCS = Tests/TestProcess.cpp \
+			RandomGenerators/RandomGenerator.cpp \
+			RandomGenerators/UniformGenerators/EcuyerCombined.cpp \
+			RandomGenerators/UniformGenerators/LinearCongruential.cpp \
+			RandomGenerators/UniformGenerators/PseudoGenerator.cpp \
+			RandomGenerators/UniformGenerators/UniformGenerator.cpp \
+			RandomGenerators/ContinuousGenerators/ContinuousGenerator.cpp \
+			RandomGenerators/ContinuousGenerators/Normal.cpp \
+			Processes/SinglePath.cpp \
+			Processes/RandomProcess.cpp \
+			Processes/BSEuler1D.cpp \
+			Processes/BlackScholes1D.cpp \
+			
+PROC_OBJS = $(PROC_SRCS:.cpp=.o)
+
+test_proc: $(PROC_OBJS)
+	$(CXX) $(CXXFLAGS) -o $@ $(PROC_OBJS)
+
+
+
+
 # Pattern rule to compile .cpp to .o
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
+
+# Cleaning Rules
 clean_random:
 	rm -f $(GEN_OBJS) test_random
 
 clean_pde:
 	rm -f $(PDE_OBJS) test_pde
+
+clean_proc:
+	rm -f $(PROC_OBJS) test_proc
