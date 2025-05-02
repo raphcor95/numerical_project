@@ -112,7 +112,7 @@ Matrix* Input::CSV2Mat(const std::string& filepath) {
 
 // int main()
 // {
-//     std::string filepath = "../Inputs/matCorr.csv";
+//     std::string filepath = "../Inputs/matCov.csv";
 //     Input* Inp = new Input();
 //     Matrix* Mat = Inp->CSV2Mat(filepath);
 //     Mat->print();
