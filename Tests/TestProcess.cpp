@@ -28,6 +28,11 @@ void Generate1DBlackScholes(Normal* Norm,
         }
         std::cout << " " << std::endl;
     }
+
+    // Output the simulations
+    Output* Out = new Output();
+    Out->Vec2CSV(paths, "Outputs/BSEuler1D_Simulations.csv");
+    delete Out;
 }
 
 /* N-Dimensional BS Paths */
@@ -55,6 +60,11 @@ void GenerateNDBlackScholes(Normal* Norm,
         }
         std::cout << " " << std::endl;
     }
+
+    // Output the simulations
+    Output* Out = new Output();
+    Out->Vec2CSV(paths, "Outputs/BSEulerND_Simulations.csv");
+    delete Out;
 }                            
 
 
