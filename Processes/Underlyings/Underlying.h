@@ -12,4 +12,5 @@ class Underlying
         Underlying(RandomProcess* generator, double initVal, const std::vector<double>& vecWeights);
         ~Underlying();
         virtual void Simulate(double startTime, double endTime, size_t nbSteps) = 0;
+        SinglePath* ReturnPath();
 };
