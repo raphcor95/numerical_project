@@ -71,11 +71,11 @@ Matrix* Input::CSV2Mat(const std::string& filepath) {
         while (std::getline(ss, cell, ',')) {  // Loop through columns in each row
             // Trim whitespace and check for any hidden characters
             cell = trim(cell);
-            std::cout << "[" << cell << "]" << std::endl;
-            for (char c : cell) {
-                std::cout << "'" << c << "'(" << static_cast<int>(c) << ") ";
-            }
-            std::cout << std::stod(cell) << " is of type " << typeid(cell).name() << std::endl;
+            // std::cout << "[" << cell << "]" << std::endl;
+            // for (char c : cell) {
+            //     std::cout << "'" << c << "'(" << static_cast<int>(c) << ") ";
+            // }
+            // std::cout << std::stod(cell) << " is of type " << typeid(cell).name() << std::endl;
 
             try {
                 // Convert to double and add to the row
