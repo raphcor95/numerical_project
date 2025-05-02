@@ -1,4 +1,4 @@
-#include "RandomProcess.h"
+#include "../RandomProcess.h"
 
 class Underlying
 {
