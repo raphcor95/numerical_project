@@ -32,7 +32,7 @@ GEN_SRCS = Tests/TestRandom.cpp \
            RandomGenerators/ContinuousGenerators/ContinuousGenerator.cpp \
            RandomGenerators/ContinuousGenerators/Normal.cpp \
            RandomGenerators/ContinuousGenerators/Exponential.cpp \
-		   Utils/Output.cpp
+		   Utils/Output.cpp 
 
 GEN_OBJS = $(GEN_SRCS:.cpp=.o)
 
@@ -67,13 +67,15 @@ PROC_SRCS = Tests/TestProcess.cpp \
 			Processes/RandomProcess.cpp \
 			Processes/BSEuler1D.cpp \
 			Processes/BlackScholes1D.cpp \
-			
+			Processes/BSEulerND.cpp \
+			Processes/BlackScholesND.cpp \
+			Utils/Input.cpp \
+			Utils/Matrix.cpp
+
 PROC_OBJS = $(PROC_SRCS:.cpp=.o)
 
 test_proc: $(PROC_OBJS)
 	$(CXX) $(CXXFLAGS) -o $@ $(PROC_OBJS)
-
-
 
 
 # Pattern rule to compile .cpp to .o
@@ -90,3 +92,5 @@ clean_pde:
 
 clean_proc:
 	rm -f $(PROC_OBJS) test_proc
+
+clean: clean_random clean_pde clean_proc
