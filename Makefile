@@ -70,6 +70,7 @@ PROC_SRCS = Tests/TestProcess.cpp \
 			Processes/BSEulerND.cpp \
 			Processes/BlackScholesND.cpp \
 			Utils/Input.cpp \
+			Utils/Output.cpp \
 			Utils/Matrix.cpp
 
 PROC_OBJS = $(PROC_SRCS:.cpp=.o)
