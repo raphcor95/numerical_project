@@ -9,7 +9,7 @@ protected:
 	RandomGenerator* Generator;
 	vector<SinglePath*> Paths;
 	int Dimension;
-
+ 
 public:
 	RandomProcess(RandomGenerator* Gen, int dim);
 	virtual void Simulate(double startTime, double endTime, size_t nbSteps) = 0;

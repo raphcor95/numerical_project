@@ -1,4 +1,5 @@
 #include "Basket.h"
+#include "Output.h"
 #include <iostream>
 
 // Constructor
@@ -33,7 +34,6 @@ void Basket::Simulate(double startTime, double endTime, size_t nbSteps)
     {
         currVal += VecWeights[k] * Generator->GetPath(k)->GetValue(0);
     }
-    std::cout << "Initial value: " << currVal << std::endl;
 
     // Initialise the Path
     if (Path != nullptr)            // Erase previous content if any
@@ -50,6 +50,12 @@ void Basket::Simulate(double startTime, double endTime, size_t nbSteps)
         vecDiff[k] = Generator->GetPath(k)->GetValues();
     }
 
+    // Output the trajectories
+    // Output* Out = new Output();
+    // Out->Vec2CSV(vecDiff, "Outputs/BSComponents_Simulations.csv");
+    // std::cout << "Outputting the results in: Outputs/BSComponents_Simulations.csv" << std::endl;
+
+
     // Update the path of the Underlying
     for (size_t t = 1; t < nbSteps; t++)
     {  
@@ -57,10 +63,9 @@ void Basket::Simulate(double startTime, double endTime, size_t nbSteps)
 
         // Compute the basket value
         for (size_t k = 0; k < VecWeights.size(); k++)
-        {
+        {   
             currVal += VecWeights[k] * vecDiff[k][t];
         }
-        std::cout << currVal << std::endl;
         Path->AddValue(currVal);
     }
 }
