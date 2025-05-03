@@ -14,12 +14,6 @@ Underlying::~Underlying()
 
 }
 
-// Wrapper for simulation function
-void Underlying::Simulate(double startTime, double endTime, size_t nbSteps)
-{
-
-}
-
 // Return Path Method
 SinglePath* Underlying::ReturnPath()
 {
