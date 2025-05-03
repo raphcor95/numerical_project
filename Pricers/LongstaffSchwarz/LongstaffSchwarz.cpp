@@ -10,7 +10,7 @@ LongstaffSchwarz::LongstaffSchwarz(
     size_t nbSteps
 ) : 
     Pricer(undl, nbSim, startTime, endTime, nbSteps),
-    Times(times)
+    VecTimes(times)
 {
     // Verification of the inputs
     if (startTime > times.front())
@@ -27,4 +27,28 @@ LongstaffSchwarz::LongstaffSchwarz(
 LongstaffSchwarz::~LongstaffSchwarz()
 {
 
+}
+
+// Simulating the paths
+void LongstaffSchwarz::Simulate()
+{
+    // Variables
+
+    // Removing the previously simulated paths if any
+    if (VecPaths.size() > 0)
+    {
+        while (VecPaths.size() > 0)
+        {
+            VecPaths.pop_back();
+        }
+    }
+
+    for (size_t n = 0; n < NbSim; n++)
+    {   
+        // Simulating the process
+        Undl->Simulate(StartTime, EndTime, NbSteps);
+
+        // Storing the Pointer in the Paths vector
+        VecPaths.push_back(new SinglePath(*Undl->ReturnPath()));
+    }
 }
