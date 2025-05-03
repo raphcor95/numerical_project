@@ -69,6 +69,8 @@ PROC_SRCS = Tests/TestProcess.cpp \
 			Processes/BlackScholes1D.cpp \
 			Processes/BSEulerND.cpp \
 			Processes/BlackScholesND.cpp \
+			Processes/Underlyings/Underlying.cpp \
+			Processes/Underlyings/Basket.cpp \
 			Utils/Input.cpp \
 			Utils/Output.cpp \
 			Utils/Matrix.cpp

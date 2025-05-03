@@ -21,5 +21,46 @@ Basket::~Basket()
 // Simulation Method
 void Basket::Simulate(double startTime, double endTime, size_t nbSteps)
 {
-    std::cout << "Not implemented yet" << std::endl;
+    // Variables
+    std::vector< std::vector<double> > vecDiff(VecWeights.size(), std::vector<double>(nbSteps, 0.0));
+    double currVal = 0.0;
+
+    // Diffusing the components
+    Generator->Simulate(startTime, endTime, nbSteps);
+
+    // Initialise the current value and the SinglePath
+    for (size_t k = 0; k < VecWeights.size(); k++)
+    {
+        currVal += VecWeights[k] * Generator->GetPath(k)->GetValue(0);
+    }
+    std::cout << "Initial value: " << currVal << std::endl;
+
+    // Initialise the Path
+    if (Path != nullptr)            // Erase previous content if any
+    {
+        delete Path;
+        Path = nullptr;
+    }
+    Path = new SinglePath(startTime, endTime, nbSteps);
+    Path->AddValue(currVal);
+
+    // Retrieve the trajectories
+    for (size_t k = 0; k < VecWeights.size(); k++)
+    {
+        vecDiff[k] = Generator->GetPath(k)->GetValues();
+    }
+
+    // Update the path of the Underlying
+    for (size_t t = 1; t < nbSteps; t++)
+    {  
+        currVal = 0.0;
+
+        // Compute the basket value
+        for (size_t k = 0; k < VecWeights.size(); k++)
+        {
+            currVal += VecWeights[k] * vecDiff[k][t];
+        }
+        std::cout << currVal << std::endl;
+        Path->AddValue(currVal);
+    }
 }

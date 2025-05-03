@@ -4,6 +4,7 @@
 #include "../RandomGenerators/UniformGenerators/LinearCongruential.h"
 #include "../Processes/BSEuler1D.h"
 #include "../Processes/BSEulerND.h"
+#include "../Processes/Underlyings/Basket.h"
 #include "../Utils/Input.h"
 #include "../Utils/Output.h"
 
@@ -21,17 +22,18 @@ void Generate1DBlackScholes(Normal* Norm,
         paths[i] = BSPath->GetPath(0)->GetValues();
         
         // Print the results
-        std::cout << i << "-th simulation ";
-        for (size_t j = 0; j < paths[i].size(); j++)
-        {
-            std::cout << paths[i][j] << " - ";
-        }
-        std::cout << " " << std::endl;
+        // std::cout << i << "-th simulation ";
+        // for (size_t j = 0; j < paths[i].size(); j++)
+        // {
+        //     std::cout << paths[i][j] << " - ";
+        // }
+        // std::cout << " " << std::endl;
     }
 
     // Output the simulations
     Output* Out = new Output();
     Out->Vec2CSV(paths, "Outputs/BSEuler1D_Simulations.csv");
+    std::cout << "Outputting the results in: Outputs/BSEuler1D_Simulations.csv" << std::endl;
     delete Out;
 }
 
@@ -52,20 +54,45 @@ void GenerateNDBlackScholes(Normal* Norm,
     // Get the trajectories
     for (size_t i = 0; i < paths.size(); i++)
     {
-        std::cout << i << "-th asset: ";
+        // std::cout << i << "-th asset: ";
         paths[i] = BSEulerMulti->GetPath(i)->GetValues();
-        for (size_t j = 0; j < paths[i].size(); j++)
-        {
-            std::cout << paths[i][j] << " ";
-        }
-        std::cout << " " << std::endl;
+        // for (size_t j = 0; j < paths[i].size(); j++)
+        // {
+        //     std::cout << paths[i][j] << " ";
+        // }
+        // std::cout << " " << std::endl;
     }
 
     // Output the simulations
     Output* Out = new Output();
     Out->Vec2CSV(paths, "Outputs/BSEulerND_Simulations.csv");
+    std::cout << "Outputting the results in: Outputs/BSEulerND_Simulations.csv" << std::endl;
     delete Out;
-}                            
+}     
+
+void GenerateBlackScholesBasket(Normal* Norm,
+                                std::vector<double>& vecSpots, 
+                                std::vector<double>& vecRates,
+                                std::vector<double>& vecWeights,
+                                Matrix* matCov,
+                                double startTime, double endTime, size_t nbSteps)
+{
+    // Generator
+    RandomProcess* BSEulerBasket = new BSEulerND(Norm, vecSpots, vecRates, matCov);
+    Underlying* myBasket = new Basket(BSEulerBasket, 100.0, vecWeights);
+
+    // Simulate the basket paths
+    myBasket->Simulate(startTime, endTime, nbSteps);
+
+    // Output the basket path
+    SinglePath* Path = myBasket->ReturnPath();
+    std::vector< std::vector<double> >vecOut(1, std::vector<double>(nbSteps, 0.0));
+    vecOut[0] = Path->GetValues();
+    Output* Out = new Output();
+    Out->Vec2CSV(vecOut, "Outputs/BSBasket_Simulation.csv");
+    std::cout << "Outputting the results in: Outputs/BSBasket_Simulation.csv" << std::endl;
+    delete Out;
+}
 
 
 int main()
@@ -77,7 +104,7 @@ int main()
     double nbSim = 100;
     double startTime = 0;
     double endTime = 1;
-    size_t nbSteps = 10;
+    size_t nbSteps = 1000;
 
     // Generators
     UniformGenerator* Unif = new EcuyerCombined();
@@ -93,6 +120,11 @@ int main()
     Input* Inp = new Input();
     Matrix* matCov = Inp->CSV2Mat("Inputs/matCov.csv");
     GenerateNDBlackScholes(Norm, vecSpots, vecRates, matCov, startTime, endTime, nbSteps);
+
+    /* Basket Path */
+    std::vector<double> vecWeights = {0.0, 1.0, 0.0};
+    GenerateBlackScholesBasket(Norm, vecSpots, vecRates, vecWeights, matCov,
+                                startTime, endTime, nbSteps);
 
     return 0; 
 }
