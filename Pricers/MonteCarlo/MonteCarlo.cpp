@@ -20,7 +20,7 @@ MonteCarlo::MonteCarlo(
 MonteCarlo::~MonteCarlo() {}
 
 std::vector<std::vector<double>> MonteCarlo::Simulate() {
-    std::vector<std::vector<double>> SimulatedPaths(NbSim);
+    std::vector<std::vector<double>> SimulatedPaths;
 
     for (size_t i = 0; i < static_cast<size_t>(NbSim); ++i) {
         Undl->Simulate(StartTime, EndTime, NbSteps);
