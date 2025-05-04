@@ -7,8 +7,10 @@ CXXFLAGS = -std=c++17 -Wall \
                -I./RandomGenerators \
                -I./RandomGenerators/UniformGenerators \
 			   -I./Pricers/PDE \
+			   -I./Pricers \
 			   -I./Processes \
-			   -I./Pricers
+			   -I./Processes/Underlyings
+
 
 all: test_random test_pde test_proc test_mc
 
@@ -31,7 +33,7 @@ GEN_SRCS = Tests/TestRandom.cpp \
            RandomGenerators/DiscreteGenerators/Poisson.cpp \
            RandomGenerators/DiscreteGenerators/DiscreteGenerator.cpp \
            RandomGenerators/ContinuousGenerators/ContinuousGenerator.cpp \
-           RandomGenerators/ContinuousGenerators/Normal.cpp \
+           RandomGenerators/ContinuousGenerators/Normal.cpp \                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
            RandomGenerators/ContinuousGenerators/Exponential.cpp \
 		   Utils/Output.cpp 
 
@@ -81,6 +83,35 @@ PROC_OBJS = $(PROC_SRCS:.cpp=.o)
 test_proc: $(PROC_OBJS)
 	$(CXX) $(CXXFLAGS) -o $@ $(PROC_OBJS)
 
+
+# Bermundan Pricing -----------------------------------------
+LS_SRCS = Tests/TestLS.cpp \
+			RandomGenerators/RandomGenerator.cpp \
+			RandomGenerators/UniformGenerators/EcuyerCombined.cpp \
+			RandomGenerators/UniformGenerators/LinearCongruential.cpp \
+			RandomGenerators/UniformGenerators/PseudoGenerator.cpp \
+			RandomGenerators/UniformGenerators/UniformGenerator.cpp \
+			RandomGenerators/ContinuousGenerators/ContinuousGenerator.cpp \
+			RandomGenerators/ContinuousGenerators/Normal.cpp \
+			Processes/SinglePath.cpp \
+			Processes/RandomProcess.cpp \
+			Processes/BSEulerND.cpp \
+			Processes/BlackScholesND.cpp \
+			Processes/Underlyings/Underlying.cpp \
+			Processes/Underlyings/Basket.cpp \
+			Pricers/Pricer.cpp \
+			Pricers/LongstaffSchwarz/LongstaffSchwarz.cpp \
+			Pricers/LongstaffSchwarz/LSLaguerrePoly.cpp \
+			Utils/Input.cpp \
+			Utils/Output.cpp \
+			Utils/Matrix.cpp
+
+			
+LS_OBJS = $(LS_SRCS:.cpp=.o)
+
+test_ls: $(LS_OBJS)
+	$(CXX) $(CXXFLAGS) -o $@ $(LS_OBJS)
+
 # Monte Carlo ----------------------------------------------
 MC_SRCS = Tests/TestMonteCarlo.cpp \
 			RandomGenerators/RandomGenerator.cpp \
@@ -124,4 +155,10 @@ clean_pde:
 clean_proc:
 	rm -f $(PROC_OBJS) test_proc
 
-clean: clean_random clean_pde clean_proc
+clean_ls:
+	rm -f $(LS_OBJS) test_ls
+
+clean_mc:
+	rm -f $(MC_OBJS) test_mc
+
+clean: clean_random clean_pde clean_proc clean_ls clean_mc
