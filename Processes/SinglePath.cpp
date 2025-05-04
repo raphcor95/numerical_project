@@ -2,6 +2,8 @@
 #include <stdexcept>
 #include <iostream>
 
+const double eps = 1e-10;
+
 SinglePath::SinglePath(double start, double end, size_t nbSteps) : 
 	StartTime(start), 
 	EndTime(end), 
@@ -77,7 +79,7 @@ vector<double>& SinglePath::GetValues()
 vector<double> SinglePath::GetValuesUpToT(double t)
 {	
 	std::cout << "[SinglePath] Checking the validity of the input." << std::endl;
-	if (t > Times.back() || t < Times.front())
+	if (t > Times.back() + eps || t < Times.front() - eps)
 	{
 		throw std::runtime_error("Time must belong to the range ["
 								+ std::to_string(Times.front())
