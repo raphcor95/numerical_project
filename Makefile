@@ -7,9 +7,10 @@ CXXFLAGS = -std=c++17 -Wall \
                -I./RandomGenerators \
                -I./RandomGenerators/UniformGenerators \
 			   -I./Pricers/PDE \
-			   -I./Processes
+			   -I./Processes \
+			   -I./Pricers
 
-all: test_random test_pde test_proc
+all: test_random test_pde test_proc test_mc
 
 
 # ------------------------------
@@ -80,6 +81,33 @@ PROC_OBJS = $(PROC_SRCS:.cpp=.o)
 test_proc: $(PROC_OBJS)
 	$(CXX) $(CXXFLAGS) -o $@ $(PROC_OBJS)
 
+# Monte Carlo ----------------------------------------------
+MC_SRCS = Tests/TestMonteCarlo.cpp \
+			RandomGenerators/RandomGenerator.cpp \
+			RandomGenerators/UniformGenerators/EcuyerCombined.cpp \
+			RandomGenerators/UniformGenerators/LinearCongruential.cpp \
+			RandomGenerators/UniformGenerators/PseudoGenerator.cpp \
+			RandomGenerators/UniformGenerators/UniformGenerator.cpp \
+			RandomGenerators/ContinuousGenerators/ContinuousGenerator.cpp \
+			RandomGenerators/ContinuousGenerators/Normal.cpp \
+			Processes/SinglePath.cpp \
+			Processes/RandomProcess.cpp \
+			Processes/BSEuler1D.cpp \
+			Processes/BlackScholes1D.cpp \
+			Processes/BSEulerND.cpp \
+			Processes/BlackScholesND.cpp \
+			Processes/Underlyings/Underlying.cpp \
+			Processes/Underlyings/Basket.cpp \
+			Pricers/MonteCarlo/MonteCarlo.cpp \
+			Pricers/Pricer.cpp \
+			Utils/Input.cpp \
+			Utils/Output.cpp \
+			Utils/Matrix.cpp
+
+MC_OBJS = $(MC_SRCS:.cpp=.o)
+
+test_mc: $(MC_OBJS)
+	$(CXX) $(CXXFLAGS) -o $@ $(MC_OBJS)
 
 # Pattern rule to compile .cpp to .o
 %.o: %.cpp
