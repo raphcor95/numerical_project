@@ -1,5 +1,5 @@
 #pragma once
-#include "Pricer.h"
+#include "../Pricer.h"
 #include "../Utils/Matrix.h"
 
 class MonteCarlo : public Pricer
