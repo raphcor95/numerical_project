@@ -139,7 +139,7 @@ int main()
     std::vector<double> vecRates(3, 0.05);
     Input* Inp = new Input();
     Matrix* matCov = Inp->CSV2Mat("Inputs/matCov.csv");
-    GenerateNDBlackScholes(Norm, vecSpots, vecRates, matCov, startTime, endTime, nbSteps);
+    // GenerateNDBlackScholes(Norm, vecSpots, vecRates, matCov, startTime, endTime, nbSteps);
 
     /* Basket Path */
     std::vector<double> vecWeights = {0.0, 1.0, 0.0};
