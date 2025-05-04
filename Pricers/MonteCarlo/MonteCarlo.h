@@ -17,10 +17,9 @@ class MonteCarlo : public Pricer
             double endTime,
             size_t nbSteps
         );
-        std::vector<std::vector<double>> SimulatedPaths;
         
         ~MonteCarlo();
-        void Simulate();
+        std::vector<std::vector<double>> Simulate();
         //Juste pour pas planter 
         virtual double Price() override;
 

@@ -33,17 +33,11 @@ int main() {
     );
 
     // === Simulation ===
-    mc->Simulate();
+    std::vector<std::vector<double>> SimulatedPaths = mc->Simulate();
 
     // === Output the simulations ===
-    std::vector<std::vector<double>> paths(nbSim);
-    for (size_t i = 0; i < nbSim; i++)
-    {
-        paths[i] = mc->SimulatedPaths[i];
-    }
-
     Output* Out = new Output();
-    Out->Vec2CSV(paths, "Outputs/MonteCarlo_Simulations.csv");
+    Out->Vec2CSV(SimulatedPaths, "Outputs/MonteCarlo_Simulations.csv");
     std::cout << "Outputting the results in: Outputs/MonteCarlo_Simulations.csv" << std::endl;
     
     // === Cleaning ===

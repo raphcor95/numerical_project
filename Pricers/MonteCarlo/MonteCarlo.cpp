@@ -19,22 +19,19 @@ MonteCarlo::MonteCarlo(
 
 MonteCarlo::~MonteCarlo() {}
 
-void MonteCarlo::Simulate() {
-    SimulatedPaths.clear();
+std::vector<std::vector<double>> MonteCarlo::Simulate() {
+    std::vector<std::vector<double>> SimulatedPaths(NbSim);
 
     for (size_t i = 0; i < static_cast<size_t>(NbSim); ++i) {
         Undl->Simulate(StartTime, EndTime, NbSteps);
         SinglePath* Path = Undl->ReturnPath();
         SimulatedPaths.push_back(Path->GetValues());
     }
+
+    return SimulatedPaths;
 }
 
 // Marche pas. Juste pour pas planter.
 double MonteCarlo::Price() {
-    Simulate();
-    double sum = 0.0;
-    for (const auto& path : SimulatedPaths) {
-        sum += path.back();
-    }
-    return sum / SimulatedPaths.size();
+    std::cout << "Not implemented yet" << std::endl;
 }
