@@ -18,7 +18,7 @@ LongstaffSchwarz::LongstaffSchwarz(
     {
         throw std::runtime_error("First observation cannot be before startTime.");
     }
-    if (endTime < times.back())
+    if (endTime != times.back())
     {
         throw std::runtime_error("Last observation must equal endTime = Maturity.");
     }
