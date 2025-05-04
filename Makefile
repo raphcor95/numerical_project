@@ -102,6 +102,8 @@ LS_SRCS = Tests/TestLS.cpp \
 			Pricers/Pricer.cpp \
 			Pricers/LongstaffSchwarz/LongstaffSchwarz.cpp \
 			Pricers/LongstaffSchwarz/LSLaguerrePoly.cpp \
+			Payoffs/Payoff.cpp \
+			Payoffs/EuropeanCall.cpp \
 			Utils/Input.cpp \
 			Utils/Output.cpp \
 			Utils/Matrix.cpp
@@ -130,7 +132,7 @@ MC_SRCS = Tests/TestMonteCarlo.cpp \
 			Processes/Underlyings/Underlying.cpp \
 			Processes/Underlyings/Basket.cpp \
 			Pricers/MonteCarlo/MonteCarlo.cpp \
-			Payoffs/Payoffs.cpp \
+			Payoffs/Payoff.cpp \
 			Payoffs/EuropeanCall.cpp \
 			Pricers/Pricer.cpp \
 			Utils/Input.cpp \

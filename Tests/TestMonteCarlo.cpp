@@ -42,7 +42,7 @@ int main() {
     std::cout << "Outputting the results in: Outputs/MonteCarlo_Simulations.csv" << std::endl;
 
     // === Compute Payoff option ===
-    Payoffs* myCall = new EuropeanCall(100.0);
+    Payoff* myCall = new EuropeanCall(100.0);
     double final_payoff = mc->Price(myCall);
     std::cout << "Option payoff: " << final_payoff << std::endl;
     // === Cleaning ===
