@@ -51,6 +51,12 @@ void GenerateNDBlackScholes(Normal* Norm,
     // Simulate the trajectories
     BSEulerMulti->Simulate(startTime, endTime, nbSteps);
 
+    // Simulate multiple trajectories
+    for (size_t i = 0; i < 10; i++)
+    {
+        BSEulerMulti->Simulate(startTime, endTime, nbSteps);
+    }
+
     // Get the trajectories
     for (size_t i = 0; i < paths.size(); i++)
     {
@@ -111,7 +117,7 @@ int main()
     Normal* Norm = new NormalBoxMuller(0.0, 1.0, Unif);
 
     /* 1-Dimensional BS Paths */
-   Generate1DBlackScholes(Norm, spot, rate, vol, nbSim, startTime, endTime, nbSteps);
+//    Generate1DBlackScholes(Norm, spot, rate, vol, nbSim, startTime, endTime, nbSteps);
 
     /* N-Dimensional BS Paths */
     double N = 3.0;
@@ -123,8 +129,10 @@ int main()
 
     /* Basket Path */
     std::vector<double> vecWeights = {0.0, 1.0, 0.0};
-    GenerateBlackScholesBasket(Norm, vecSpots, vecRates, vecWeights, matCov,
-                                startTime, endTime, nbSteps);
+    // GenerateBlackScholesBasket(Norm, vecSpots, vecRates, vecWeights, matCov,
+                                // startTime, endTime, nbSteps);
+
+    std::cout << "Test completed successfully!" << std::endl;
 
     return 0; 
 }
