@@ -33,8 +33,8 @@ GEN_SRCS = Tests/TestRandom.cpp \
            RandomGenerators/DiscreteGenerators/Poisson.cpp \
            RandomGenerators/DiscreteGenerators/DiscreteGenerator.cpp \
            RandomGenerators/ContinuousGenerators/ContinuousGenerator.cpp \
-           RandomGenerators/ContinuousGenerators/Normal.cpp \                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
-           RandomGenerators/ContinuousGenerators/Exponential.cpp \
+           RandomGenerators/ContinuousGenerators/Normal.cpp \
+		   RandomGenerators/ContinuousGenerators/Exponential.cpp \
 		   Utils/Output.cpp 
 
 GEN_OBJS = $(GEN_SRCS:.cpp=.o)
@@ -130,6 +130,8 @@ MC_SRCS = Tests/TestMonteCarlo.cpp \
 			Processes/Underlyings/Underlying.cpp \
 			Processes/Underlyings/Basket.cpp \
 			Pricers/MonteCarlo/MonteCarlo.cpp \
+			Payoffs/Payoffs.cpp \
+			Payoffs/EuropeanCall.cpp \
 			Pricers/Pricer.cpp \
 			Utils/Input.cpp \
 			Utils/Output.cpp \

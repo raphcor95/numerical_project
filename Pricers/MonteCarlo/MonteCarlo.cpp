@@ -31,7 +31,12 @@ std::vector<std::vector<double>> MonteCarlo::Simulate() {
     return SimulatedPaths;
 }
 
-// Marche pas. Juste pour pas planter.
 double MonteCarlo::Price(Payoffs* payoff) {
-    std::cout << "Not implemented yet" << std::endl;
+    double sumPayoff = 0.0;
+    for (size_t i = 0; i < static_cast<size_t>(NbSim); ++i) {
+        Undl->Simulate(StartTime, EndTime, NbSteps);
+        SinglePath* Path = Undl->ReturnPath();
+        sumPayoff += (*payoff)(Path->GetValues());
+    }
+    return sumPayoff / NbSim;
 }

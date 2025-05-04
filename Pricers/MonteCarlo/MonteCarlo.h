@@ -19,8 +19,9 @@ class MonteCarlo : public Pricer
         );
         
         ~MonteCarlo();
+        // Function to do the dimulations
         std::vector<std::vector<double>> Simulate();
-        //Juste pour pas planter 
+        // Function to price by simulating
         double Price(Payoffs* payoff);
 
 };

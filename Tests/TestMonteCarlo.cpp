@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include "../Pricers/MonteCarlo/MonteCarlo.h"
+#include "../Payoffs/EuropeanCall.h"
 #include "../RandomGenerators/UniformGenerators/EcuyerCombined.h"
 #include "../RandomGenerators/UniformGenerators/LinearCongruential.h"
 #include "../Processes/BSEuler1D.h"
@@ -14,7 +15,7 @@ int main() {
     double startTime = 0.0;
     double endTime = 1.0;
     size_t nbSteps = 365;
-    size_t nbSim = 10;
+    size_t nbSim = 100;
 
     std::vector<double> vecSpots(3, 100.0);
     std::vector<double> vecRates(3, 0.05);
@@ -39,7 +40,11 @@ int main() {
     Output* Out = new Output();
     Out->Vec2CSV(SimulatedPaths, "Outputs/MonteCarlo_Simulations.csv");
     std::cout << "Outputting the results in: Outputs/MonteCarlo_Simulations.csv" << std::endl;
-    
+
+    // === Compute Payoff option ===
+    Payoffs* myCall = new EuropeanCall(100.0);
+    double final_payoff = mc->Price(myCall);
+    std::cout << "Option payoff: " << final_payoff << std::endl;
     // === Cleaning ===
     delete Out;
     delete matCov;
