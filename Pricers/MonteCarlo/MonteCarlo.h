@@ -1,6 +1,6 @@
 #pragma once
-#include "../Pricer.h"
-#include "../../Utils/Matrix.h"
+#include "Pricer.h"
+#include "Utils/Matrix.h"
 
 class MonteCarlo : public Pricer
 {
@@ -22,6 +22,6 @@ class MonteCarlo : public Pricer
         // Function to do the dimulations
         std::vector<std::vector<double>> Simulate();
         // Function to price by simulating
-        double Price(Payoffs* payoff);
+        double Price(Payoff* payoff);
 
 };

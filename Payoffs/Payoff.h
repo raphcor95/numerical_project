@@ -1,10 +1,10 @@
 #pragma once
 #include <vector>
-class Payoffs
+class Payoff
 {
 
 public:
-    Payoffs();
-	~Payoffs();
+    Payoff();
+	~Payoff();
     virtual double operator()(const std::vector<double>& vecPath) = 0;
 };

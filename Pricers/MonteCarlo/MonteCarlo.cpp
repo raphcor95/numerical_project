@@ -31,7 +31,7 @@ std::vector<std::vector<double>> MonteCarlo::Simulate() {
     return SimulatedPaths;
 }
 
-double MonteCarlo::Price(Payoffs* payoff) {
+double MonteCarlo::Price(Payoff* payoff) {
     double sumPayoff = 0.0;
     for (size_t i = 0; i < static_cast<size_t>(NbSim); ++i) {
         Undl->Simulate(StartTime, EndTime, NbSteps);

@@ -1,10 +1,10 @@
 #pragma once
-#include "Payoffs.h"
+#include "Payoff.h"
 
 using namespace std;
 
 
-class EuropeanCall: public Payoffs{
+class EuropeanCall: public Payoff{
     private:
         double strike;
 
