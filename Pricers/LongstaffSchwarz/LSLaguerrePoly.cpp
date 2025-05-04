@@ -1,4 +1,5 @@
 #include "LSLaguerrePoly.h"
+#include "Matrix.h"
 #include <iostream>
 #include <cmath>
 
@@ -52,14 +53,14 @@ double LSLaguerrePoly::Price(Payoff* payoff)
     double Yj;
     double Xj;
     std::vector<double> vecUpToT;
-    std::vector<double> vecAlpha(3, 0.0);                   // Vector for the alpha coefficients
-    std::vector<double> vecSumPiYj(3, 0.0);                 // Vector containing the sum of Yj * Pi(xj)
-    std::vector< std::vector<double> > vecHil(3, std::vector<double>(3, 0.0));       // Matrix of Hij coefficients
+    std::vector<double> vecAlpha(3, 0.0);                                           // Vector for the alpha coefficients
+    std::vector< std::vector<double> > vecSumPiYj(3, std::vector<double>(1, 0.0));  // Vector containing the sum of Yj * Pi(xj)
+    std::vector< std::vector<double> > vecHil(3, std::vector<double>(3, 0.0));      // Matrix of Hij coefficients
 
 
 
     // Check whether simulations exist or if we need to simulate
-    if (VecPaths.size() > 0)
+    if (VecPaths.size() == 0)
     {
         std::cout << "[LSLaguerre] Simulating trajectories ..." << std::endl;
         Simulate();
@@ -76,10 +77,11 @@ double LSLaguerrePoly::Price(Payoff* payoff)
 
     // Loop on the exercise dates backwards
     std::cout << "[LSLaguerre] Looping on observation dates ..." << std::endl;
-    for (size_t idx = VecTimes.size(); idx >= 0; idx--)
+    for (int idx =  static_cast<int>(VecTimes.size()) - 1; idx >= 0; idx--)
     {
         // Retrieve the observation date
         double t = VecTimes[idx];
+        std::cout << "[LSLaguerre] Running computations for t = " << t << std::endl;
 
         // Compute exercise value
         std::cout << "[LSLaguerre] Computing immediate exercise values ..." << std::endl;
@@ -96,7 +98,7 @@ double LSLaguerrePoly::Price(Payoff* payoff)
                     + std::to_string(i) + "-th order polynomial ..." << std::endl;
 
             // Clean Previous Values
-            vecSumPiYj[i] = 0.0;
+            vecSumPiYj[i][0] = 0.0;
             for (size_t k = 0; k < vecAlpha.size(); k++)
             {
                 vecHil[i][k] = 0.0;
@@ -115,48 +117,55 @@ double LSLaguerrePoly::Price(Payoff* payoff)
                         vecUpToT = VecPaths[j]->GetValuesUpToT(t);
                         Yj = (*payoff)(vecUpToT);
                         Xj = VecPaths[j]->GetValue(t);
-                        vecSumPiYj[i] += Yj * Order0Poly(Xj);
+                        vecSumPiYj[i][0] += Yj * Order0Poly(Xj);
                         for (size_t k = 0; k < vecAlpha.size(); k++)
                         {
                             switch(k)
                             {
-
                                 case 0:
                                     vecHil[i][k] += Order0Poly(Xj) * Order0Poly(Xj);
+                                    break;
                                 case 1:
                                     vecHil[i][k] += Order0Poly(Xj) * Order1Poly(Xj);
+                                    break;
                                 case 2:
                                     vecHil[i][k] += Order0Poly(Xj) * Order2Poly(Xj);
+                                    break;
                                 default:
                                     throw std::runtime_error("Order not supported.");
                             }
                         }
                     }
+                    break;
                 case 1:
                     for (size_t j = 0; j < NbSim; j++)
                     {
                         Yj = (*payoff)(vecUpToT);
-                        vecSumPiYj[i] += Yj * Order1Poly(VecPaths[j]->GetValue(t));
+                        vecSumPiYj[i][0] += Yj * Order1Poly(VecPaths[j]->GetValue(t));
                         for (size_t k = 0; k < vecAlpha.size(); k++)
                         {
                             switch(k)
                             {
                                 case 0:
                                     vecHil[i][k] += Order1Poly(Xj) * Order0Poly(Xj);
+                                    break;
                                 case 1:
                                     vecHil[i][k] += Order1Poly(Xj) * Order1Poly(Xj);
+                                    break;
                                 case 2:
                                     vecHil[i][k] += Order1Poly(Xj) * Order2Poly(Xj);
+                                    break;
                                 default:
                                     throw std::runtime_error("Order not supported.");
                             }
                         }
                     }
+                    break;
                 case 2:
                     for (size_t j = 0; j < NbSim; j++)
                     {
                         Yj = (*payoff)(VecPaths[j]->GetValues());
-                        vecSumPiYj[i] += Yj * Order2Poly(VecPaths[j]->GetValue(t));
+                        vecSumPiYj[i][0] += Yj * Order2Poly(VecPaths[j]->GetValue(t));
                         for (size_t k = 0; k < vecAlpha.size(); k++)
                         {
                             switch(k)
@@ -164,23 +173,30 @@ double LSLaguerrePoly::Price(Payoff* payoff)
 
                                 case 0:
                                     vecHil[i][k] += Order2Poly(Xj) * Order0Poly(Xj);
+                                    break;
                                 case 1:
                                     vecHil[i][k] += Order2Poly(Xj) * Order1Poly(Xj);
+                                    break;
                                 case 2:
                                     vecHil[i][k] += Order2Poly(Xj) * Order2Poly(Xj);
+                                    break;
                                 default:
                                     throw std::runtime_error("Order not supported.");
                             }
                         }
                     }
+                    break;
                 default:
                     throw std::runtime_error("Polynomial of order " + std::to_string(i) + "not supported.");
             }   
         }
         std::cout << "Preliminary computations completed!" << std::endl;
 
-        // Now that we have all the coefficients to solve the linear systemn we determine alphas
-
-        std::cout << "Work In Progress ... " << std::endl;
+        /* Now that we have all the coefficients to solve the linear systemn we determine alphas */
+        
+        // Convert Hil into a matrix to perform Matrix Inversion and solve for Alphas
+        Matrix H = Matrix(vecHil);
+        Matrix MatPiYj = Matrix(vecSumPiYj);
+        
     }
 }
