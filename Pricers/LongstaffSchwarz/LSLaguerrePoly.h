@@ -1,6 +1,7 @@
+#pragma once
 #include "LongstaffSchwarz.h"
 
-class LSLaguerrePoly : LongstaffSchwarz
+class LSLaguerrePoly : public LongstaffSchwarz
 {
     public:
         LSLaguerrePoly(Underlying* undl, std::vector<double> times,

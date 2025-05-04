@@ -16,5 +16,5 @@ class LongstaffSchwarz : public Pricer
                         double nbSim, double startTime, double endTime, size_t nbSteps);
         ~LongstaffSchwarz();
         void Simulate();
-        std::vector<SinglePath*> ReturnPaths();
+        const std::vector<SinglePath*>& ReturnPaths() const;
 };
