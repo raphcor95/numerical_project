@@ -1,3 +1,4 @@
+#pragma once
 #include "../RandomProcess.h"
 
 class Underlying
