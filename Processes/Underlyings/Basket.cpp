@@ -59,14 +59,14 @@ void Basket::Simulate(double startTime, double endTime, size_t nbSteps)
 
 
     // Update the path of the Underlying
-    for (size_t t = 1; t < nbSteps; t++)
+    for (size_t t = 0; t < nbSteps; t++)
     {  
         currVal = 0.0;
 
         // Compute the basket value
         for (size_t k = 0; k < VecWeights.size(); k++)
         {   
-            currVal += VecWeights[k] * vecDiff[k][t];
+            currVal += VecWeights[k] * vecDiff[k][t+1];
         }
         Path->AddValue(currVal);
     }
