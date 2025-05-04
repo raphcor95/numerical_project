@@ -100,7 +100,7 @@ void GenerateBlackScholesBasket(Normal* Norm,
         std::cout << vecTest[i] << " ";
     }
     std::cout << "" << std::endl;
-    vecTest = Path->GetValues();
+    vecTest = Path->GetTimes();
     for (size_t i = 0; i < vecTest.size(); i++)
     {
         std::cout << vecTest[i] << " ";
