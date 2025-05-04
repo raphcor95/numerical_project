@@ -92,6 +92,20 @@ void GenerateBlackScholesBasket(Normal* Norm,
 
     // Output the basket path
     SinglePath* Path = myBasket->ReturnPath();
+    std::cout << "Testing truncated SinglePath" << std::endl;
+    std::vector<double> vecTest = Path->GetValuesUpToT(0.65);
+    std::cout << "Vector size: " << vecTest.size() << std::endl;
+    for (size_t i = 0; i < vecTest.size(); i++)
+    {
+        std::cout << vecTest[i] << " ";
+    }
+    std::cout << "" << std::endl;
+    vecTest = Path->GetValues();
+    for (size_t i = 0; i < vecTest.size(); i++)
+    {
+        std::cout << vecTest[i] << " ";
+    }
+    std::cout << "" << std::endl;
     std::vector< std::vector<double> >vecOut(1, std::vector<double>(nbSteps, 0.0));
     vecOut[0] = Path->GetValues();
     Output* Out = new Output();
@@ -110,7 +124,7 @@ int main()
     double nbSim = 100;
     double startTime = 0;
     double endTime = 1;
-    size_t nbSteps = 1000;
+    size_t nbSteps = 10;
 
     // Generators
     UniformGenerator* Unif = new EcuyerCombined();
@@ -129,8 +143,8 @@ int main()
 
     /* Basket Path */
     std::vector<double> vecWeights = {0.0, 1.0, 0.0};
-    // GenerateBlackScholesBasket(Norm, vecSpots, vecRates, vecWeights, matCov,
-                                // startTime, endTime, nbSteps);
+    GenerateBlackScholesBasket(Norm, vecSpots, vecRates, vecWeights, matCov,
+                                startTime, endTime, nbSteps);
 
     std::cout << "Test completed successfully!" << std::endl;
 

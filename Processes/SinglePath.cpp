@@ -1,5 +1,6 @@
 #include "SinglePath.h"
 #include <stdexcept>
+#include <iostream>
 
 SinglePath::SinglePath(double start, double end, size_t nbSteps) : 
 	StartTime(start), 
@@ -70,6 +71,36 @@ double SinglePath::GetValue(double time)
 vector<double>& SinglePath::GetValues()
 {
 	return Values;
+}
+
+// Method to return part of the Values (up to a given point in time)
+vector<double> SinglePath::GetValuesUpToT(double t)
+{	
+	std::cout << "[SinglePath] Checking the validity of the input." << std::endl;
+	if (t > Times.back() || t < Times.front())
+	{
+		throw std::runtime_error("Time must belong to the range ["
+								+ std::to_string(Times.front())
+								+ " : "
+								+ std::to_string(Times.back()) + ".");
+	}
+
+	// Variables
+	double terminalValue = GetValue(t);
+	std::vector<double> vecResults;
+
+	// Building the truncated vector
+	for (size_t i = 0; i < Values.size(); i++)
+	{
+		if (Times[i] < t)
+		{
+			vecResults.push_back(Values[i]);
+		} else {
+			vecResults.push_back(terminalValue);
+			break;
+		}
+	}
+	return vecResults;
 }
 
 

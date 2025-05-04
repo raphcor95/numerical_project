@@ -17,6 +17,7 @@ public:
 	void AddValue(double val);
 	double GetValue(double time);
 	vector<double>& GetValues();
+	vector<double> GetValuesUpToT(double t);
 	vector<double>& GetTimes();
 	~SinglePath();
 };
