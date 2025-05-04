@@ -1,5 +1,6 @@
 #pragma once
 #include "../Processes/Underlyings/Underlying.h"
+#include "../Payoffs/Payoffs.h"
 
 class Pricer
 {
@@ -13,5 +14,5 @@ class Pricer
     public:
         Pricer(Underlying* undl, double nbSim, double startTime, double endTime, size_t nbSteps);
         ~Pricer();
-        virtual double Price() = 0;
+        virtual double Price(Payoffs* payoff) = 0;
 };

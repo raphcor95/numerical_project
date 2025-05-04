@@ -32,6 +32,6 @@ std::vector<std::vector<double>> MonteCarlo::Simulate() {
 }
 
 // Marche pas. Juste pour pas planter.
-double MonteCarlo::Price() {
+double MonteCarlo::Price(Payoffs* payoff) {
     std::cout << "Not implemented yet" << std::endl;
 }

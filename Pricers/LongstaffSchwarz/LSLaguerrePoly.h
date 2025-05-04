@@ -7,5 +7,5 @@ class LSLaguerrePoly : public LongstaffSchwarz
         LSLaguerrePoly(Underlying* undl, std::vector<double> times,
             double nbSim, double startTime, double endTime, size_t nbSteps);
         ~LSLaguerrePoly();
-        double Price();
+        double Price(Payoffs* payoff);
 };

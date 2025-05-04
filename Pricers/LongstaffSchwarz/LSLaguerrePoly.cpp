@@ -19,7 +19,7 @@ LSLaguerrePoly::~LSLaguerrePoly()
 
 }
 
-double LSLaguerrePoly::Price()
+double LSLaguerrePoly::Price(Payoffs* payoff)
 {
     std::cout << "Not implemented yet" << std::endl;
 }

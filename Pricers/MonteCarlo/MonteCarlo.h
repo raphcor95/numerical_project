@@ -21,6 +21,6 @@ class MonteCarlo : public Pricer
         ~MonteCarlo();
         std::vector<std::vector<double>> Simulate();
         //Juste pour pas planter 
-        virtual double Price() override;
+        double Price(Payoffs* payoff);
 
 };
