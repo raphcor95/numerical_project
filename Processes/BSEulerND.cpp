@@ -39,7 +39,9 @@ void BSEulerND::Simulate(double startTime, double endTime, size_t nbSteps)
     for (size_t i = 0; i < N; i++)
     {
         vecCurr[i] = this->VecSpots[i];
+        std::cout << "[BSEulerND] Creating new asset SinglePath and Pointer: ";
         SinglePath* Path = new SinglePath(startTime, endTime, nbSteps);
+        std::cout << Path << std::endl;
         Path->AddValue(vecCurr[i]);
         vecPaths.push_back(Path);
     }
@@ -74,13 +76,17 @@ void BSEulerND::Simulate(double startTime, double endTime, size_t nbSteps)
 
     // Store the values in the Paths member of the RandomProcess Mother Class
     // Clear previous paths
+    std::cout << "[BSEulerND] Checking if the vector of pointers is empty." << std::endl;
+    std::cout << "[BSEulerND] Size of the Paths vector: " << Paths.size() << std::endl;
     if (Paths.size() > 0)
     {
-        while (Paths.size() > 0)
+        for (auto p : Paths)
         {
-            delete Paths[0];
+            std::cout << "[BSEuler] Deleting pointer: " << p << std::endl;
+            delete p;
         }
     }
+    Paths.clear();
     for (size_t k = 0; k < N; k++)
     {
         Paths.push_back(vecPaths[k]);
