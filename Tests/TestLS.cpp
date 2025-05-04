@@ -6,10 +6,10 @@
 #include "../Processes/Underlyings/Basket.h"
 #include "../Pricers/LongstaffSchwarz/LongstaffSchwarz.h"
 #include "../Pricers/LongstaffSchwarz/LSLaguerrePoly.h"
+#include "../Payoffs/EuropeanCall.h"
 #include "../Utils/Input.h"
 #include "../Utils/Output.h"
 
- 
 int main()
 {
 
@@ -39,24 +39,30 @@ int main()
         Underlying* myBasket = new Basket(BSEulerMulti, vecSpots[0], vecWeights);
 
         // Longstaff Schwarz Pricer - Laguerre Polynomials
-        std::vector<double> vecTimes = {0.2, 0.4, 0.6, 0.8};
+        std::vector<double> vecTimes = {0.2, 0.4, 0.6, 1.0};
         LongstaffSchwarz* PricerLS = new LSLaguerrePoly(myBasket, vecTimes, nbSim,
                                     startTime, endTime, nbSteps);
-        PricerLS->Simulate();
-        const std::vector<SinglePath*>& vecPaths = PricerLS->ReturnPaths();
+        // PricerLS->Simulate();
+        // const std::vector<SinglePath*>& vecPaths = PricerLS->ReturnPaths();
 
-        // Outputting the simulations
-        std::vector< std::vector<double> > vecSim;
-        for (size_t k = 0; k < nbSim; k++)
-        {
-            vecSim.push_back(vecPaths[k]->GetValues());
-        }
+        // // Outputting the simulations
+        // std::vector< std::vector<double> > vecSim;
+        // for (size_t k = 0; k < nbSim; k++)
+        // {
+        //     vecSim.push_back(vecPaths[k]->GetValues());
+        // }
 
-        // Outputting the results for visualisation
-        Output* Out = new Output();
-        Out->Vec2CSV(vecSim, "Outputs/LSBasket_Simulations.csv");
-        std::cout << "Outputting the results in: Outputs/LSBasket_Simulations.csv" << std::endl;
-        delete Out;
+        // // Outputting the results for visualisation
+        // Output* Out = new Output();
+        // Out->Vec2CSV(vecSim, "Outputs/LSBasket_Simulations.csv");
+        // std::cout << "Outputting the results in: Outputs/LSBasket_Simulations.csv" << std::endl;
+        
+        // Payoff
+        Payoff* EUCall = new EuropeanCall(100.0);
+        PricerLS->Price(EUCall);
+
+
+
         std::cout << "Execution Successful!" << std::endl;
 
 
