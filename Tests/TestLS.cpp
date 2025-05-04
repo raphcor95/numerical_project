@@ -19,8 +19,8 @@ int main()
         double spot = 100;
         double startTime = 0;
         double endTime = 1;
-        double nbSim = 1000;
-        size_t nbSteps = 1000;
+        double nbSim = 2;
+        size_t nbSteps = 10;
 
         // Generators
         UniformGenerator* Unif = new EcuyerCombined();
