@@ -6,6 +6,7 @@ CXXFLAGS = -std=c++17 -Wall \
 			   -I./Utils \
                -I./RandomGenerators \
                -I./RandomGenerators/UniformGenerators \
+			   -I./RandomGenerators/QuasiRandomGenerators \
 			   -I./Pricers/PDE \
 			   -I./Pricers \
 			   -I./Processes \
