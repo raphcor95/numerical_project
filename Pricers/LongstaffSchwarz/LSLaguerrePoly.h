@@ -1,5 +1,6 @@
 #pragma once
 #include "LongstaffSchwarz.h"
+#include "Matrix.h"
 
 class LSLaguerrePoly : public LongstaffSchwarz
 {
@@ -13,4 +14,5 @@ class LSLaguerrePoly : public LongstaffSchwarz
         double Order0Poly(double x);
         double Order1Poly(double x);
         double Order2Poly(double x);
+        double ComputeExpectedValue(Matrix& MatColAlphas, double x);
 };
