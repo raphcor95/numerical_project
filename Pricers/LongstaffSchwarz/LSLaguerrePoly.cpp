@@ -212,11 +212,6 @@ double LSLaguerrePoly::Price(Payoff* payoff)
         H.print();
 
         // Compute the optimal alphas
-        // try{
-        //     Matrix MatColAlphas = (H.inverse()).matrix_product(MatPiYj);
-        // } catch (const std::exception& e) {
-        //     throw std::runtime_error("Error when computing the alpha matrix");
-        // }
         Matrix MatColAlphas = (H.inverse()).matrix_product(MatPiYj);
 
 
