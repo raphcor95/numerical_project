@@ -24,7 +24,7 @@ void BSEulerND::Simulate(double startTime, double endTime, size_t nbSteps) {
 }
 
 // Simulating Method
-void BSEulerND::Simulate(double startTime, double endTime, size_t nbSteps, const std::vector<std::vector<double>>* vecW_anti)
+void BSEulerND::Simulate(double startTime, double endTime, size_t nbSteps, std::vector<std::vector<double>>* vecW_anti)
 {
     // Variables 
     size_t N = this->VecSpots.size();                   // Number of underlyings
@@ -73,8 +73,6 @@ void BSEulerND::Simulate(double startTime, double endTime, size_t nbSteps, const
                 }
                 else {
                     corrW += L(k, j) * (*vecW_anti)[t][k];
-                    
-
                 }
             }
 
