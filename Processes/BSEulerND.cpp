@@ -19,14 +19,18 @@ BSEulerND::~BSEulerND()
 
 }
 
+void BSEulerND::Simulate(double startTime, double endTime, size_t nbSteps) {
+    Simulate(startTime, endTime, nbSteps, nullptr);
+}
+
 // Simulating Method
-void BSEulerND::Simulate(double startTime, double endTime, size_t nbSteps)
+void BSEulerND::Simulate(double startTime, double endTime, size_t nbSteps, const std::vector<std::vector<double>>* vecW_anti)
 {
     // Variables 
     size_t N = this->VecSpots.size();                   // Number of underlyings
     double dt = (endTime - startTime) / nbSteps;        // Number of Steps
     std::vector<SinglePath*> vecPaths;                  // Vector of single paths
-    std::vector<double> vecCurr(N, 0.0);                // Vector of current prices 
+    std::vector<double> vecCurr(N, 0.0);                // Vector of current prices
     std::vector<double> vecW(N, 0.0);                   // Vector of Brownian Motions
     std::vector<double> vecR(N, 0.0);                   // Vector of Returns  
     double corrW = 0.0;                                 // Correlated Brownian
@@ -49,10 +53,12 @@ void BSEulerND::Simulate(double startTime, double endTime, size_t nbSteps)
     // Fill the rest of the vectors using Euler Disretised version of the BS dynamics
     for (size_t t = 0; t < nbSteps; t++)
     {
-        // Generate Brownian Vector
-        for (size_t k = 0; k < N; k++)
-        {
-            vecW[k] = Generator->Generate(); 
+        if (vecW_anti == nullptr) {
+            // Generate Brownian Vector
+            for (size_t k = 0; k < N; k++)
+            {
+                vecW[k] = Generator->Generate(); 
+            }
         }
 
         // Generate Correlated Paths
@@ -62,7 +68,14 @@ void BSEulerND::Simulate(double startTime, double endTime, size_t nbSteps)
             corrW = 0.0;
             for (size_t j = 0; j < N; j++)
             {
-                corrW += L(k, j) * vecW[j];
+                if (vecW_anti == nullptr) {
+                    corrW += L(k, j) * vecW[j];
+                }
+                else {
+                    corrW += L(k, j) * (*vecW_anti)[t][k];
+                    
+
+                }
             }
 
             // Update current values
