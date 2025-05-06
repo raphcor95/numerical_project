@@ -51,10 +51,22 @@ BlackScholesND::BlackScholesND(Normal* Gen,
                                 + " square matrix."
         );
     }
+}
 
+// Getters
+const std::vector<double>& BlackScholesND::GetSpots() const 
+{
+    return VecSpots;
+}
 
-    
+const std::vector<double>& BlackScholesND::GetRates() const 
+{
+    return VecRates;
+}
 
+Matrix* BlackScholesND::GetMat()
+{
+    return MatCov;
 }
 
 BlackScholesND::~BlackScholesND()
