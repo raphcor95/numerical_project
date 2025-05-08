@@ -149,6 +149,11 @@ MC_SRCS = Tests/TestMonteCarlo.cpp \
 			Pricers/Pricer.cpp \
 			Utils/Input.cpp \
 			Utils/Output.cpp \
+			Utils/Tools.cpp \
+			RandomGenerators/QuasiRandomGenerators/QuasiRandom.cpp \
+		    RandomGenerators/QuasiRandomGenerators/LDSequences/LDSequence.cpp \
+		    RandomGenerators/QuasiRandomGenerators/LDSequences/HaltonVdC.cpp \
+		    RandomGenerators/QuasiRandomGenerators/QuasiRandomNormal/QuasiRandomNormal.cpp \
 			Utils/Matrix.cpp
 
 MC_OBJS = $(MC_SRCS:.cpp=.o)

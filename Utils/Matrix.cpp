@@ -139,6 +139,47 @@ std::pair<Matrix, Matrix> Matrix::luDecomposition() const {
     return std::make_pair(L, U);
 }
 
+// ----------------- Choelsky Decomposition -------------
+std::pair<Matrix, Matrix> Matrix::choleskyDecomposition() const {
+    if (!isSquare()) {
+        throw std::invalid_argument("Cholesky decomposition requires a square matrix.");
+    }
+
+    size_t n = rows;
+    Matrix L(n, n);
+
+    for (size_t i = 0; i < n; ++i) {
+        for (size_t j = 0; j <= i; ++j) {
+            double sum = 0.0;
+
+            for (size_t k = 0; k < j; ++k) {
+                sum += L(i, k) * L(j, k);
+            }
+
+            if (i == j) {
+                double diag = (*this)(i, i) - sum;
+                if (diag <= 0.0) {
+                    throw std::runtime_error("Matrix is not positive definite.");
+                }
+                L(i, j) = std::sqrt(diag);
+            } else {
+                L(i, j) = ((*this)(i, j) - sum) / L(j, j);
+            }
+        }
+    }
+
+    return std::make_pair(L, L.transpose());
+}
+
+// ----------------- Transpose Matrix -------------
+Matrix Matrix::transpose() const {
+    Matrix result(cols, rows);
+    for (size_t i = 0; i < rows; ++i)
+        for (size_t j = 0; j < cols; ++j)
+            result(j, i) = data[i][j];
+    return result;
+}
+
 
 // -------------------------------------------------------------------
 //  Methods only for the first question but are not used

@@ -30,6 +30,12 @@ public:
     // --- LU Decomposition ---
     std::pair<Matrix, Matrix> luDecomposition() const;
 
+    // --- Choelsky Decomposition ---
+    std::pair<Matrix, Matrix> choleskyDecomposition() const;
+
+    // --- Transpose Matrix ---
+    Matrix transpose() const;
+
     // --- Display ---
     void print() const;
 

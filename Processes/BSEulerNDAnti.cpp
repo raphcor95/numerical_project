@@ -50,7 +50,7 @@ void BSEulerNDAnti::Simulate(double startTime, double endTime, size_t nbSteps)
     }
 
     // Get LU Decomposition of the Correlation Matrix
-    std::pair<Matrix, Matrix> MatLU = this->MatCov->luDecomposition();
+    std::pair<Matrix, Matrix> MatLU = this->MatCov->choleskyDecomposition();
     Matrix L = MatLU.first;
 
     // Check if a new generation is necessary (either initial generation or different nbsteps)

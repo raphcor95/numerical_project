@@ -47,7 +47,7 @@ void BSEulerND::Simulate(double startTime, double endTime, size_t nbSteps, std::
     double corrW = 0.0;                                 // Correlated Brownian
 
     // Get LU Decomposition of the Correlation Matrix
-    std::pair<Matrix, Matrix> MatLU = this->MatCov->luDecomposition();
+    std::pair<Matrix, Matrix> MatLU = this->MatCov->choleskyDecomposition();
     Matrix L = MatLU.first;
 
     // Fill the first values in the Paths with the spots values in vecSpots

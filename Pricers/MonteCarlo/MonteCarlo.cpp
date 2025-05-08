@@ -7,6 +7,7 @@
 #include "../Utils/Tools.h"
 
 #include <iostream>
+#include <cmath>
 
 MonteCarlo::MonteCarlo(
     Underlying* myBasket,
@@ -37,7 +38,7 @@ double MonteCarlo::Price(Payoff* payoff) {
     for (size_t i = 0; i < static_cast<size_t>(NbSim); ++i) {
         Undl->Simulate(StartTime, EndTime, NbSteps);
         SinglePath* Path = Undl->ReturnPath();
-        sumPayoff += (*payoff)(Path->GetValues());
+        sumPayoff += std::exp(-0.05 * this->EndTime) * (*payoff)(Path->GetValues());
     }
     return sumPayoff / NbSim;
 }
