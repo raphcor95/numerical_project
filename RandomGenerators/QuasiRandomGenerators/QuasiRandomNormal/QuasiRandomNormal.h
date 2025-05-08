@@ -1,3 +1,4 @@
+#pragma once
 #include "../QuasiRandom.h"
 #include "../LDSequences/LDSequence.h"
 
