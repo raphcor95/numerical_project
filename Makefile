@@ -6,7 +6,6 @@ CXXFLAGS = -std=c++17 -Wall \
 			   -I./Utils \
                -I./RandomGenerators \
                -I./RandomGenerators/UniformGenerators \
-			   -I./RandomGenerators/QuasiRandomGenerators \
 			   -I./Pricers/PDE \
 			   -I./Pricers \
 			   -I./Processes \
@@ -36,7 +35,11 @@ GEN_SRCS = Tests/TestRandom.cpp \
            RandomGenerators/ContinuousGenerators/ContinuousGenerator.cpp \
            RandomGenerators/ContinuousGenerators/Normal.cpp \
 		   RandomGenerators/ContinuousGenerators/Exponential.cpp \
-		   Utils/Output.cpp 
+		   RandomGenerators/QuasiRandomGenerators/QuasiRandom.cpp \
+		   RandomGenerators/QuasiRandomGenerators/LDSequences/LDSequence.cpp \
+		   RandomGenerators/QuasiRandomGenerators/LDSequences/HaltonVdC.cpp \
+		   Utils/Output.cpp  \
+		   Utils/Tools.cpp
 
 GEN_OBJS = $(GEN_SRCS:.cpp=.o)
 
