@@ -1,16 +1,22 @@
 #pragma once
 #include "LDSequence.h"
 #include <vector>
+#include <deque>
 
 class HaltonVdC : public LDSequence
 {
     protected:
-        int Dimension;
-        std::vector<double> VecD;
         double Current;
+        std::vector<int> VecBases;
+        std::vector< std::deque<int> > VecDecompos;
+
+    private:
+        int cnt;
+        double BAdicToDouble(std::deque<int>& vecBAdic, int b);
+
 
     public:
-        HaltonVdC(int Dimension);
-        ~HaltonVdC();
+        HaltonVdC(int dimension);
         double Generate();
-}
+        ~HaltonVdC();
+};
