@@ -19,6 +19,7 @@ void GenerateBSEuler1D(Normal* Norm,
                             double spot, double rate, double vol, double nbSim,
                             double startTime, double endTime, size_t nbSteps)
 {
+    std::cout << "[TestProcess] Generating 1 dimension Pseudo BS Euler processes." << std::endl;
     RandomProcess* BSPath = new BSEuler1D(Norm, spot, rate, vol);
     std::vector<std::vector<double>> paths(nbSim, std::vector<double>(nbSteps));
     for (size_t i = 0; i < nbSim; i++)
@@ -39,6 +40,7 @@ void GenerateQuasiBSEuler1D(QuasiRandomNormal* QuasiNormal,
                             double spot, double rate, double vol, double nbSim,
                             double startTime, double endTime, size_t nbSteps)
 {
+    std::cout << "[TestProcess] Generating 1 dimension Quasi BS Euler processes." << std::endl;
     RandomProcess* BSPath = new BSEuler1D(QuasiNormal, spot, rate, vol);
     std::vector<std::vector<double>> paths(nbSim, std::vector<double>(nbSteps));
     for (size_t i = 0; i < nbSim; i++)
@@ -55,24 +57,22 @@ void GenerateQuasiBSEuler1D(QuasiRandomNormal* QuasiNormal,
 }
 
 /* N-Dimensional BS Paths */
-void GenerateNDBlackScholes(Normal* Norm,
+
+// Generation using Pseudo Random Numbers
+void GenerateBSEulerND(Normal* Norm,
                             std::vector<double>& vecSpots, 
                             std::vector<double>& vecRates,
                             Matrix* matCov,
                             double startTime, double endTime, size_t nbSteps)
-{
+{   
+    std::cout << "[TestProcess] Generating N dimensions Pseudo BS Euler processes." << std::endl;
+
     // Variables
     std::vector<std::vector<double>> paths(vecSpots.size(), std::vector<double>(nbSteps));
     RandomProcess* BSEulerMulti = new BSEulerND(Norm, vecSpots, vecRates, matCov);
 
     // Simulate the trajectories
     BSEulerMulti->Simulate(startTime, endTime, nbSteps);
-
-    // Simulate multiple trajectories
-    for (size_t i = 0; i < 10; i++)
-    {
-        BSEulerMulti->Simulate(startTime, endTime, nbSteps);
-    }
 
     // Get the trajectories
     for (size_t i = 0; i < paths.size(); i++)
@@ -83,29 +83,26 @@ void GenerateNDBlackScholes(Normal* Norm,
 
     // Output the simulations
     Output* Out = new Output();
-    Out->Vec2CSV(paths, "Outputs/BSEulerND_Simulations.csv");
-    std::cout << "Outputting the results in: Outputs/BSEulerND_Simulations.csv" << std::endl;
+    Out->Vec2CSV(paths, "Outputs/PseudoBSEulerND_Simulations.csv");
+    std::cout << "Outputting the results in: Outputs/PseudoBSEulerND_Simulations.csv" << std::endl;
     delete Out;
-}     
+}   
 
-void GenerateNDBlackScholes(Normal* Norm,
-    std::vector<double>& vecSpots, 
-    std::vector<double>& vecRates,
-    Matrix* matCov,
-    double startTime, double endTime, size_t nbSteps)
+// Generation using Quasi Random Numbers
+void GenerateQuasiBSEulerND(QuasiRandomNormal* QuasiNormal,
+                            std::vector<double>& vecSpots,
+                            std::vector<double>& vecRates,
+                            Matrix* matCov,
+                            double startTime, double endTime, size_t nbSteps)
 {
+    std::cout << "[TestProcess] Generating N dimensions Quasi BS Euler processes." << std::endl;
+
     // Variables
     std::vector<std::vector<double>> paths(vecSpots.size(), std::vector<double>(nbSteps));
-    RandomProcess* BSEulerMulti = new BSEulerND(Norm, vecSpots, vecRates, matCov);
+    RandomProcess* BSEulerMulti = new BSEulerND(QuasiNormal, vecSpots, vecRates, matCov);
 
     // Simulate the trajectories
     BSEulerMulti->Simulate(startTime, endTime, nbSteps);
-
-    // Simulate multiple trajectories
-    for (size_t i = 0; i < 10; i++)
-    {
-    BSEulerMulti->Simulate(startTime, endTime, nbSteps);
-    }
 
     // Get the trajectories
     for (size_t i = 0; i < paths.size(); i++)
@@ -116,32 +113,74 @@ void GenerateNDBlackScholes(Normal* Norm,
 
     // Output the simulations
     Output* Out = new Output();
-    Out->Vec2CSV(paths, "Outputs/BSEulerND_Simulations.csv");
-    std::cout << "Outputting the results in: Outputs/BSEulerND_Simulations.csv" << std::endl;
+    Out->Vec2CSV(paths, "Outputs/QuasiBSEulerND_Simulations.csv");
+    std::cout << "Outputting the results in: Outputs/QuasiBSEulerND_Simulations.csv" << std::endl;
     delete Out;
 }     
 
-void GenerateBlackScholesBasket(Normal* Norm,
+
+/* N-Dimensional BS Paths */
+
+// Generation using Pseudo Random Numbers
+void GenerateBasketBSEuler(Normal* Norm,
                                 std::vector<double>& vecSpots, 
                                 std::vector<double>& vecRates,
                                 std::vector<double>& vecWeights,
-                                Matrix* matCov,
+                                Matrix* matCov, size_t nbSim,
                                 double startTime, double endTime, size_t nbSteps)
 {
+    std::cout << "[TestProcess] Generating N Basket Pseudo BS Euler processes." << std::endl;
+
+    // Vector to store the paths
+    std::vector< std::vector<double> > vecPaths;
+
     // Generator
     RandomProcess* BSEulerBasket = new BSEulerND(Norm, vecSpots, vecRates, matCov);
     Underlying* myBasket = new Basket(BSEulerBasket, 100.0, vecWeights);
 
-    // Simulate the basket paths
-    myBasket->Simulate(startTime, endTime, nbSteps);
+    // Generate all the paths
+    for (size_t i = 0; i < nbSim; i++)
+    {
+        myBasket->Simulate(startTime, endTime, nbSteps);
+        vecPaths.push_back(myBasket->ReturnPath()->GetValues());
+    }
 
     // Output the basket path
-    SinglePath* Path = myBasket->ReturnPath();
-    std::vector< std::vector<double> >vecOut(1, std::vector<double>(nbSteps, 0.0));
-    vecOut[0] = Path->GetValues();
     Output* Out = new Output();
-    Out->Vec2CSV(vecOut, "Outputs/BSBasket_Simulation.csv");
-    std::cout << "Outputting the results in: Outputs/BSBasket_Simulation.csv" << std::endl;
+    Out->Vec2CSV(vecPaths, "Outputs/PseudoBasketBSEuler_Simulations.csv");
+    std::cout << "Outputting the results in: Outputs/PseudoBasketBSEuler_Simulations.csv" << std::endl;
+    delete Out;
+}
+
+// Generation using Quasi Random Numbers
+void GenerateBasketQuasiBSEuler(QuasiRandomNormal* QuasiNormal,
+    std::vector<double>& vecSpots, 
+    std::vector<double>& vecRates,
+    std::vector<double>& vecWeights,
+    Matrix* matCov, size_t nbSim,
+    double startTime, double endTime, size_t nbSteps)
+{
+
+    std::cout << "[TestProcess] Generating N Basket Quasi BS Euler processes." << std::endl;
+
+    // Vector to store the paths
+    std::vector< std::vector<double> > vecPaths;
+
+    // Generator
+    RandomProcess* BSEulerBasket = new BSEulerND(QuasiNormal, vecSpots, vecRates, matCov);
+    Underlying* myBasket = new Basket(BSEulerBasket, 100.0, vecWeights);
+
+    // Generate all the paths
+    for (size_t i = 0; i < nbSim; i++)
+    {
+        myBasket->Simulate(startTime, endTime, nbSteps);
+        vecPaths.push_back(myBasket->ReturnPath()->GetValues());
+    }
+
+    // Output the basket path
+    Output* Out = new Output();
+    Out->Vec2CSV(vecPaths, "Outputs/QuasiBasketBSEuler_Simulations.csv");
+    std::cout << "Outputting the results in: Outputs/QuasiBasketBSEuler_Simulations.csv" << std::endl;
     delete Out;
 }
 
@@ -169,18 +208,25 @@ int main()
     GenerateQuasiBSEuler1D(QuasiNormal1D, spot, rate, vol, nbSim, startTime, endTime, nbSteps);
     
 
-    /* N-Dimensional BS Paths */
-    // double N = 3.0;
-    // std::vector<double> vecSpots(3, 100.0);
-    // std::vector<double> vecRates(3, 0.05);
-    // Input* Inp = new Input();
-    // Matrix* matCov = Inp->CSV2Mat("Inputs/matCov.csv");
-    // GenerateNDBlackScholes(Norm, vecSpots, vecRates, matCov, startTime, endTime, nbSteps);
+    /* --- N-Dimensional BS Paths --- */
+    double N = 3.0;
+    std::vector<double> vecSpots(3, 100.0);
+    std::vector<double> vecRates(3, 0.05);
+    Input* Inp = new Input();
+    Matrix* matCov = Inp->CSV2Mat("Inputs/matCov.csv");
+    GenerateBSEulerND(Norm, vecSpots, vecRates, matCov, startTime, endTime, nbSteps);
+    LDSequence* LDSND = new HaltonVdC(static_cast<int>(N));
+    QuasiRandomNormal* QuasiNormalND = new NormInvCDF(0.0, 1.0, LDSND);
+    GenerateQuasiBSEulerND(QuasiNormalND, vecSpots, vecRates, matCov, startTime, endTime, nbSteps);
 
-    /* Basket Path */
-    // std::vector<double> vecWeights = {0.0, 1.0, 0.0};
-    // GenerateBlackScholesBasket(Norm, vecSpots, vecRates, vecWeights, matCov,
-    //                             startTime, endTime, nbSteps);
+    /* --- Basket BS Paths --- */
+    std::vector<double> vecWeights = {1.0, 0.0, 0.0};
+    LDSequence* LDBasket = new HaltonVdC(static_cast<int>(N));
+    QuasiRandomNormal* QuasiNormalBasket = new NormInvCDF(0.0, 1.0, LDBasket);
+    GenerateBasketBSEuler(Norm, vecSpots, vecRates, vecWeights, matCov, nbSim,
+                                startTime, endTime, nbSteps);
+    GenerateBasketQuasiBSEuler(QuasiNormalBasket, vecSpots, vecRates, vecWeights, matCov, nbSim,
+        startTime, endTime, nbSteps);
 
     std::cout << "Test completed successfully!" << std::endl;
 
