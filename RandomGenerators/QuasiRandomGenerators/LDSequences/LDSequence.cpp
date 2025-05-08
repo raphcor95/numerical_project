@@ -3,7 +3,7 @@
 
 
 // Constructor
-LDSequence::LDSequence(int dimension) : Dimension(dimension)
+LDSequence::LDSequence(int dimension) : QuasiRandom(), Dimension(dimension)
 {
     // Check the validity of the dimension
     if (dimension < 0)
