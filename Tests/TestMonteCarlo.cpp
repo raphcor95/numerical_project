@@ -6,6 +6,7 @@
 #include "../RandomGenerators/UniformGenerators/LinearCongruential.h"
 #include "../Processes/BSEuler1D.h"
 #include "../Processes/BSEulerND.h"
+#include "../Processes/BSEulerNDAnti.h"
 #include "../Processes/Underlyings/Basket.h"
 #include "../Utils/Input.h"
 #include "../Utils/Output.h"
@@ -14,8 +15,8 @@ int main() {
     // === Simulation Parameters ===
     double startTime = 0.0;
     double endTime = 1.0;
-    size_t nbSteps = 365;
-    size_t nbSim = 100;
+    size_t nbSteps = 100;
+    size_t nbSim = 2000;
 
     std::vector<double> vecSpots(3, 100.0);
     std::vector<double> vecRates(3, 0.05);
@@ -26,7 +27,8 @@ int main() {
     // === Class Instances ===
     UniformGenerator* Unif = new EcuyerCombined();
     Normal* Norm = new NormalBoxMuller(0.0, 1.0, Unif);
-    RandomProcess* BSEulerBasket = new BSEulerND(Norm, vecSpots, vecRates, matCov);
+    // RandomProcess* BSEulerBasket = new BSEulerND(Norm, vecSpots, vecRates, matCov);
+    RandomProcess* BSEulerBasket = new BSEulerNDAnti(Norm, vecSpots, vecRates, matCov);
     Underlying* myBasket = new Basket(BSEulerBasket, 100.0, vecWeights);
 
     MonteCarlo* mc = new MonteCarlo(

@@ -25,8 +25,8 @@ class MonteCarlo : public Pricer
         double Price(Payoff* payoff);
 
         // Function to do the simulations with antithetic
-        std::vector<std::vector<double>> Simulate_antithetic();
+        // std::vector<std::vector<double>> Simulate_antithetic();
         // Function to price by simulating with antithetic
-        double Price_antithetic(Payoff* payoff);
+        // double Price_antithetic(Payoff* payoff);
 
 };

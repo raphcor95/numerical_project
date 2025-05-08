@@ -42,27 +42,27 @@ double MonteCarlo::Price(Payoff* payoff) {
     return sumPayoff / NbSim;
 }
 
-std::vector<std::vector<double>> MonteCarlo::Simulate_antithetic() {
-    std::vector<std::vector<double>> SimulatedPaths;
-    std::vector<std::vector<std::vector<double>>> results(NbSim, std::vector<std::vector<double>>(NbSteps, std::vector<double>(this->Undl->VecWeights.size(), 0.0)));
-    results = generate_antithetic(this->Undl->Generator, NbSim, NbSteps, this->Undl->VecWeights.size());
-    for (size_t i = 0; i < static_cast<size_t>(NbSim); ++i) {
-        Undl->Simulate(StartTime, EndTime, NbSteps, results[i]);
-        SinglePath* Path = Undl->ReturnPath();
-        SimulatedPaths.push_back(Path->GetValues());
-    }
+// std::vector<std::vector<double>> MonteCarlo::Simulate_antithetic() {
+//     std::vector<std::vector<double>> SimulatedPaths;
+//     std::vector<std::vector<std::vector<double>>> results(NbSim, std::vector<std::vector<double>>(NbSteps, std::vector<double>(this->Undl->VecWeights.size(), 0.0)));
+//     results = generate_antithetic(this->Undl->Generator, NbSim, NbSteps, this->Undl->VecWeights.size());
+//     for (size_t i = 0; i < static_cast<size_t>(NbSim); ++i) {
+//         Undl->Simulate(StartTime, EndTime, NbSteps, results[i]);
+//         SinglePath* Path = Undl->ReturnPath();
+//         SimulatedPaths.push_back(Path->GetValues());
+//     }
 
-    return SimulatedPaths;
-}
+//     return SimulatedPaths;
+// }
 
-double MonteCarlo::Price_antithetic(Payoff* payoff) {
-    double sumPayoff = 0.0;
-    std::vector<std::vector<std::vector<double>>> results(NbSim, std::vector<std::vector<double>>(NbSteps, std::vector<double>(this->Undl->VecWeights.size(), 0.0)));
-    results = generate_antithetic(this->Undl->Generator, NbSim, NbSteps, this->Undl->VecWeights.size());
-    for (size_t i = 0; i < static_cast<size_t>(NbSim); ++i) {
-        Undl->Simulate(StartTime, EndTime, NbSteps, results[i]);
-        SinglePath* Path = Undl->ReturnPath();
-        sumPayoff += (*payoff)(Path->GetValues());
-    }
-    return sumPayoff / NbSim;
-}
+// double MonteCarlo::Price_antithetic(Payoff* payoff) {
+//     double sumPayoff = 0.0;
+//     std::vector<std::vector<std::vector<double>>> results(NbSim, std::vector<std::vector<double>>(NbSteps, std::vector<double>(this->Undl->VecWeights.size(), 0.0)));
+//     results = generate_antithetic(this->Undl->Generator, NbSim, NbSteps, this->Undl->VecWeights.size());
+//     for (size_t i = 0; i < static_cast<size_t>(NbSim); ++i) {
+//         Undl->Simulate(StartTime, EndTime, NbSteps, results[i]);
+//         SinglePath* Path = Undl->ReturnPath();
+//         sumPayoff += (*payoff)(Path->GetValues());
+//     }
+//     return sumPayoff / NbSim;
+// }
