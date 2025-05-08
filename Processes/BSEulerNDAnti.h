@@ -1,6 +1,7 @@
 #pragma once
 #include "BlackScholesND.h"
 
+
 class BSEulerNDAnti : public BlackScholesND
 {
     protected:
@@ -9,6 +10,11 @@ class BSEulerNDAnti : public BlackScholesND
 
     public:
         BSEulerNDAnti(Normal* gen,
+            const std::vector<double>& vecSpots,
+            const std::vector<double>& vecRates,
+            Matrix* MatCov);
+
+        BSEulerNDAnti(QuasiRandomNormal* gen,
             const std::vector<double>& vecSpots,
             const std::vector<double>& vecRates,
             Matrix* MatCov);

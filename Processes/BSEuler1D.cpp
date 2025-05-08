@@ -5,6 +5,11 @@ BSEuler1D::BSEuler1D(Normal* Gen, double spot, double rate, double vol) :
 {
 }
 
+BSEuler1D::BSEuler1D(QuasiRandomNormal* Gen, double spot, double rate, double vol) :
+	BlackScholes1D(Gen, spot, rate, vol)
+{
+}
+
 BSEuler1D::~BSEuler1D()
 {
 }

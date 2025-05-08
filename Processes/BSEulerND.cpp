@@ -13,6 +13,17 @@ BSEulerND::BSEulerND(
 
 }
 
+// Constructor with QuasiRandomNormal
+BSEulerND::BSEulerND(
+    QuasiRandomNormal* Gen, 
+    const std::vector<double>& vecSpots, 
+    const std::vector<double>& vecRates,
+    Matrix* matCorr
+) : BlackScholesND(Gen, vecSpots, vecRates, matCorr)
+{
+
+}
+
 // Destructor
 BSEulerND::~BSEulerND()
 {

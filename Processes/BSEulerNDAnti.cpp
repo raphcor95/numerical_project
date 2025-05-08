@@ -12,6 +12,18 @@ BSEulerNDAnti::BSEulerNDAnti(
 
 };
 
+// Constructor with QuasiRandomNormal generator
+BSEulerNDAnti::BSEulerNDAnti(
+    QuasiRandomNormal* gen, 
+    const std::vector<double>& vecSpots,
+    const std::vector<double>& vecRates,
+    Matrix* MatCov
+) : 
+    BlackScholesND(gen, vecSpots, vecRates, MatCov)
+{
+
+};
+
 // Simulation tool
 void BSEulerNDAnti::Simulate(double startTime, double endTime, size_t nbSteps)
 {

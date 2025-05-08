@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "RandomProcess.h"
+#include "QuasiRandomGenerators/QuasiRandomNormal/QuasiRandomNormal.h"
 #include "../Utils/Matrix.h"
 
 class BlackScholesND : public RandomProcess
@@ -12,6 +13,10 @@ class BlackScholesND : public RandomProcess
 
     public:
         BlackScholesND(Normal* Gen, 
+                        const std::vector<double>& vecSpots,
+                        const std::vector<double>& vecRates,
+                        Matrix* matCov);
+        BlackScholesND(QuasiRandomNormal* Gen,
                         const std::vector<double>& vecSpots,
                         const std::vector<double>& vecRates,
                         Matrix* matCov);
