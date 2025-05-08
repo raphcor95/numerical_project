@@ -41,7 +41,7 @@ NormInvCDF::NormInvCDF(double inputMu, double inputSigma, LDSequence* sequence) 
 // Generate function
 double NormInvCDF::Generate()
 {
-    double p = 0.0;     // Dummy value waiting for LD Sequence implementation
+    double p = Sequence->Generate();
     if (p < 0.5)
     {
         return -RationalApproximation(sqrt(-2.0 * log(p)));

@@ -38,6 +38,7 @@ GEN_SRCS = Tests/TestRandom.cpp \
 		   RandomGenerators/QuasiRandomGenerators/QuasiRandom.cpp \
 		   RandomGenerators/QuasiRandomGenerators/LDSequences/LDSequence.cpp \
 		   RandomGenerators/QuasiRandomGenerators/LDSequences/HaltonVdC.cpp \
+		   RandomGenerators/QuasiRandomGenerators/QuasiRandomNormal/QuasiRandomNormal.cpp \
 		   Utils/Output.cpp  \
 		   Utils/Tools.cpp
 

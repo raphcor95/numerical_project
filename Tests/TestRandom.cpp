@@ -11,17 +11,18 @@
 #include "../RandomGenerators/ContinuousGenerators/Normal.h"
 #include "../RandomGenerators/ContinuousGenerators/Exponential.h"
 #include "../RandomGenerators/QuasiRandomGenerators/LDSequences/HaltonVdC.h"
+#include "../RandomGenerators/QuasiRandomGenerators/QuasiRandomNormal/QuasiRandomNormal.h"
 
 void GenerateHaltonSequence(int dimension, size_t nbSteps)
 {   
     std::vector< std::vector<double> > vecHaltonD2;
-    QuasiRandom* QR = new HaltonVdC(dimension);
+    LDSequence* LDS = new HaltonVdC(dimension);
     for (size_t i = 0; i < nbSteps; i++)
     {
         std::vector<double> vecI(dimension, 0.0);
         for (size_t j = 0; j < dimension; j++)
         {
-            vecI[j] = QR->Generate();
+            vecI[j] = LDS->Generate();
         }
         vecHaltonD2.push_back(vecI);
     }
@@ -33,6 +34,34 @@ void GenerateHaltonSequence(int dimension, size_t nbSteps)
     Out->Vec2CSV(vecHaltonD2, outpath + "Halton2D.csv");
     
 
+}
+
+void GenerateQuasiNormal(int dimension, size_t nbSteps)
+{
+
+    // Halton Sequences
+    LDSequence* LDS = new HaltonVdC(dimension);
+    double mu = 0.0;
+    double sigma = 1.0;
+    QuasiRandomNormal* QN = new NormInvCDF(mu, sigma, LDS);
+
+    // Use this sequence to generate normals
+    std::vector< std::vector<double> > vecQuasiNormal;
+    for (size_t i = 0; i < nbSteps; i++)
+    {
+        std::vector<double> vecNormalI(dimension, 0.0);
+        for (size_t j = 0; j < dimension; j++)
+        {
+            vecNormalI[j] = QN->Generate();
+        }
+        vecQuasiNormal.push_back(vecNormalI);
+    }
+
+    // Output
+    Output* Out = new Output();
+    std::string outpath = "Outputs/";
+    std::cout << "Outputing to the following folder: " << outpath + "QuasiNormal.csv" << std::endl;
+    Out->Vec2CSV(vecQuasiNormal, outpath + "QuasiNormal.csv");
 }
 
 int main()
@@ -97,9 +126,12 @@ int main()
     // Poisson* Poiss = new Poisson(lambda, Unif);
 
     /* Halton Sequence */
-    int dimension = 2;
-    size_t nbSteps = 1000;
-    GenerateHaltonSequence(dimension, nbSteps);
+    int dimension = 30;
+    size_t nbSteps = 100000;
+    // GenerateHaltonSequence(dimension, nbSteps);
+
+    /* Quasi Normal Sequence */
+    GenerateQuasiNormal(dimension, nbSteps);
 
     // delete Bern;
     // delete Bino;
