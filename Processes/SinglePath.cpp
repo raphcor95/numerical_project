@@ -78,7 +78,7 @@ vector<double>& SinglePath::GetValues()
 // Method to return part of the Values (up to a given point in time)
 vector<double> SinglePath::GetValuesUpToT(double t)
 {	
-	std::cout << "[SinglePath] Checking the validity of the input." << std::endl;
+	// std::cout << "[SinglePath] Checking the validity of the input." << std::endl;
 	if (t > Times.back() + eps || t < Times.front() - eps)
 	{
 		throw std::runtime_error("Time must belong to the range ["

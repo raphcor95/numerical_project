@@ -19,7 +19,6 @@ class BSEulerND : public BlackScholesND
         
         // Simulating Method
         void Simulate(double startTime, double endTime, size_t nbSteps) override;
-        void Simulate(double startTime, double endTime, size_t nbSteps, std::vector<std::vector<double>>* vecW_anti=nullptr);
 
         // Destructor
         ~BSEulerND();

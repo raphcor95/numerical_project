@@ -30,12 +30,8 @@ BSEulerND::~BSEulerND()
 
 }
 
-void BSEulerND::Simulate(double startTime, double endTime, size_t nbSteps) {
-    Simulate(startTime, endTime, nbSteps, nullptr);
-}
-
 // Simulating Method
-void BSEulerND::Simulate(double startTime, double endTime, size_t nbSteps, std::vector<std::vector<double>>* vecW_anti)
+void BSEulerND::Simulate(double startTime, double endTime, size_t nbSteps)
 {
     // Variables 
     size_t N = this->VecSpots.size();                   // Number of underlyings
@@ -54,9 +50,7 @@ void BSEulerND::Simulate(double startTime, double endTime, size_t nbSteps, std::
     for (size_t i = 0; i < N; i++)
     {
         vecCurr[i] = this->VecSpots[i];
-        // std::cout << "[BSEulerND] Creating new asset SinglePath and Pointer: ";
         SinglePath* Path = new SinglePath(startTime, endTime, nbSteps);
-        // std::cout << Path << std::endl;
         Path->AddValue(vecCurr[i]);
         vecPaths.push_back(Path);
     }
@@ -64,12 +58,11 @@ void BSEulerND::Simulate(double startTime, double endTime, size_t nbSteps, std::
     // Fill the rest of the vectors using Euler Disretised version of the BS dynamics
     for (size_t t = 0; t < nbSteps; t++)
     {
-        if (vecW_anti == nullptr) {
-            // Generate Brownian Vector
-            for (size_t k = 0; k < N; k++)
-            {
-                vecW[k] = Generator->Generate(); 
-            }
+
+        // Generate Brownian Vector
+        for (size_t k = 0; k < N; k++)
+        {
+            vecW[k] = Generator->Generate(); 
         }
 
         // Generate Correlated Paths
@@ -79,17 +72,12 @@ void BSEulerND::Simulate(double startTime, double endTime, size_t nbSteps, std::
             corrW = 0.0;
             for (size_t j = 0; j < N; j++)
             {
-                if (vecW_anti == nullptr) {
-                    corrW += L(k, j) * vecW[j];
-                }
-                else {
-                    corrW += L(k, j) * (*vecW_anti)[t][k];
-                }
+                corrW += L(k, j) * vecW[j];
             }
 
             // Update current values
             vecCurr[k] = vecCurr[k] 
-                    + this->VecRates[k] * vecCurr[k] * dt + vecCurr[k] * corrW * sqrt(dt);
+                    + VecRates[k] * vecCurr[k] * dt + vecCurr[k] * corrW * sqrt(dt);
             
             // Store the results in the vecPaths
             vecPaths[k]->AddValue(vecCurr[k]);
