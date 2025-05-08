@@ -12,7 +12,7 @@ std::vector<std::vector<std::vector<double>>> generate_antithetic(Normal* Gen, s
 std::deque<int> bAdic(int k, int b);
 
 // Recursive B-Adic Decomposition of a positive integer
-std::deque<int>& RecusriveBAdic(std::deque<int>& vecDecompo, int b);
+std::deque<int>& RecursiveBAdic(std::deque<int>& vecDecompo, int b);
 
 
 

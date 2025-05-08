@@ -29,13 +29,12 @@ std::deque<int> bAdic(int k, int b)
 
     // Initialise the decomposition
     if (k > 0)
-        {
-            i_max = static_cast<int>(log(k)/log(b));
-            vecDecompo.resize(i_max + 1, 0);
-            
-            // Create a first power of the base to compute the decomposition
-            q = pow(b, i_max);
-        }
+    {
+        i_max = static_cast<int>(log(k)/log(b));
+        vecDecompo.resize(i_max + 1, 0);
+        
+        // Create a first power of the base to compute the decomposition
+        q = pow(b, i_max);
 
         // Compute the p-adic decomposition
         for (size_t i = 0; i < i_max + 1; i++)
@@ -44,14 +43,18 @@ std::deque<int> bAdic(int k, int b)
             k -= q * vecDecompo[i];
             q /= b;
         }
-
-    return vecDecompo;
+        return vecDecompo;
+    }
+    else
+    {
+        return vecDecompo;
+    }
 }
 
 /* Tool function to compute the b-adic expansion of a positive intger */
 /* For a given basis, this function allows to compute the decomposition of the n-th
 term knowing the decomposition vector of the previous one. */
-std::deque<int>& RecusriveBAdic(std::deque<int>& vecDecompo, int b)
+std::deque<int>& RecursiveBAdic(std::deque<int>& vecDecompo, int b)
 {
     /* This algorithm was proposed in Monte Carlo methods
     for Financial Engineering by Paul Glasserman */
