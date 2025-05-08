@@ -130,6 +130,7 @@ MC_SRCS = Tests/TestMonteCarlo.cpp \
 			Processes/BlackScholes1D.cpp \
 			Processes/BSEulerND.cpp \
 			Processes/BlackScholesND.cpp \
+			Processes/BSEulerNDAnti.cpp \
 			Processes/Underlyings/Underlying.cpp \
 			Processes/Underlyings/Basket.cpp \
 			Pricers/MonteCarlo/MonteCarlo.cpp \
