@@ -54,10 +54,7 @@ void LongstaffSchwarz::Simulate()
         std::cout << Undl->ReturnPath()->GetValue(NbSteps) << std::endl;
 
         // Storing the Pointer in the Paths vector
-        std::cout << "[LS] Path address from Undl: " << Undl->ReturnPath() << std::endl;
         VecPaths.push_back(new SinglePath(*Undl->ReturnPath()));
-        std::cout << "[LS] Copied path stored at: " << VecPaths.back() << std::endl;
-
     }
 }
 
