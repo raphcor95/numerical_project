@@ -16,3 +16,34 @@ std::vector<std::vector<std::vector<double>>> generate_antithetic(Normal* Gen, s
     }
     return results;
 }
+
+
+/* Tool function to compute p-adic expansion of a positive integer */
+std::vector<int> bAdic(int k, int b)
+{
+    // Variables
+    std::vector<int> vecDecompo(1, 0);                // Vector to store the decomposition
+    int i_max = 0;                                    // Integerfor the maximum size of the vector
+    int q = 0;
+    
+
+    // Initialise the decomposition
+    if (k > 0)
+        {
+            i_max = static_cast<int>(log(k)/log(b));
+            vecDecompo.resize(i_max + 1, 0);
+            
+            // Create a first power of the base to compute the decomposition
+            q = pow(b, i_max);
+        }
+
+        // Compute the p-adic decomposition
+        for (size_t i = 0; i < i_max + 1; i++)
+        {
+            vecDecompo[i] = static_cast<int>(k / q);
+            k -= q * vecDecompo[i];
+            q /= b;
+        }
+
+    return vecDecompo;
+}
