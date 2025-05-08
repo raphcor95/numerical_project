@@ -127,8 +127,8 @@ int main()
 
     /* Halton Sequence */
     int dimension = 30;
-    size_t nbSteps = 100000;
-    // GenerateHaltonSequence(dimension, nbSteps);
+    size_t nbSteps = 252;
+    GenerateHaltonSequence(dimension, nbSteps);
 
     /* Quasi Normal Sequence */
     GenerateQuasiNormal(dimension, nbSteps);

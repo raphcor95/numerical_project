@@ -6,6 +6,7 @@ CXXFLAGS = -std=c++17 -Wall \
 			   -I./Utils \
                -I./RandomGenerators \
                -I./RandomGenerators/UniformGenerators \
+			   -I./RandomGenerators/QuasiRandomGenerators \
 			   -I./Pricers/PDE \
 			   -I./Pricers \
 			   -I./Processes \
@@ -71,6 +72,10 @@ PROC_SRCS = Tests/TestProcess.cpp \
 			RandomGenerators/UniformGenerators/UniformGenerator.cpp \
 			RandomGenerators/ContinuousGenerators/ContinuousGenerator.cpp \
 			RandomGenerators/ContinuousGenerators/Normal.cpp \
+			RandomGenerators/QuasiRandomGenerators/QuasiRandom.cpp \
+			RandomGenerators/QuasiRandomGenerators/LDSequences/LDSequence.cpp \
+			RandomGenerators/QuasiRandomGenerators/LDSequences/HaltonVdC.cpp \
+			RandomGenerators/QuasiRandomGenerators/QuasiRandomNormal/QuasiRandomNormal.cpp \
 			Processes/SinglePath.cpp \
 			Processes/RandomProcess.cpp \
 			Processes/BSEuler1D.cpp \
@@ -81,7 +86,8 @@ PROC_SRCS = Tests/TestProcess.cpp \
 			Processes/Underlyings/Basket.cpp \
 			Utils/Input.cpp \
 			Utils/Output.cpp \
-			Utils/Matrix.cpp
+			Utils/Matrix.cpp \
+			Utils/Tools.cpp
 
 PROC_OBJS = $(PROC_SRCS:.cpp=.o)
 
