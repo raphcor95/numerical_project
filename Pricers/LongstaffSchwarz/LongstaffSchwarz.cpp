@@ -51,8 +51,6 @@ void LongstaffSchwarz::Simulate()
         // Simulating the process
         Undl->Simulate(StartTime, EndTime, NbSteps);
 
-        std::cout << Undl->ReturnPath()->GetValue(NbSteps) << std::endl;
-
         // Storing the Pointer in the Paths vector
         VecPaths.push_back(new SinglePath(*Undl->ReturnPath()));
     }
