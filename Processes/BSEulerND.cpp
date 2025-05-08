@@ -43,9 +43,9 @@ void BSEulerND::Simulate(double startTime, double endTime, size_t nbSteps, std::
     for (size_t i = 0; i < N; i++)
     {
         vecCurr[i] = this->VecSpots[i];
-        std::cout << "[BSEulerND] Creating new asset SinglePath and Pointer: ";
+        // std::cout << "[BSEulerND] Creating new asset SinglePath and Pointer: ";
         SinglePath* Path = new SinglePath(startTime, endTime, nbSteps);
-        std::cout << Path << std::endl;
+        // std::cout << Path << std::endl;
         Path->AddValue(vecCurr[i]);
         vecPaths.push_back(Path);
     }
@@ -87,13 +87,13 @@ void BSEulerND::Simulate(double startTime, double endTime, size_t nbSteps, std::
 
     // Store the values in the Paths member of the RandomProcess Mother Class
     // Clear previous paths
-    std::cout << "[BSEulerND] Checking if the vector of pointers is empty." << std::endl;
-    std::cout << "[BSEulerND] Size of the Paths vector: " << Paths.size() << std::endl;
+    // std::cout << "[BSEulerND] Checking if the vector of pointers is empty." << std::endl;
+    // std::cout << "[BSEulerND] Size of the Paths vector: " << Paths.size() << std::endl;
     if (Paths.size() > 0)
     {
         for (auto p : Paths)
         {
-            std::cout << "[BSEuler] Deleting pointer: " << p << std::endl;
+            // std::cout << "[BSEuler] Deleting pointer: " << p << std::endl;
             delete p;
         }
     }

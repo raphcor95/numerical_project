@@ -36,10 +36,10 @@ void Basket::Simulate(double startTime, double endTime, size_t nbSteps)
     }
 
     // Initialise the Path
-    std::cout << "[Basket] Checking if the Path pointer is null." << std::endl;
+    // std::cout << "[Basket] Checking if the Path pointer is null." << std::endl;
     if (Path != nullptr)            // Erase previous content if any
     {
-        std::cout << "[Basket] Deleting Path: " << Path << std::endl;
+        // std::cout << "[Basket] Deleting Path: " << Path << std::endl;
         delete Path;
         Path = nullptr;
     }
