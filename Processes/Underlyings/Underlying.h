@@ -6,6 +6,7 @@ class Underlying
     protected:
         RandomProcess* Generator;
         SinglePath* Path;
+        std::vector< std::vector<double> > VecPaths;
         double InitVal;
         std::vector<double> VecWeights;
 
@@ -16,4 +17,5 @@ class Underlying
         // virtual void Simulate(double startTime, double endTime, size_t nbSteps, 
         //                                std::vector< std::vector<double> >* vecW_anti = nullptr) = 0;
         SinglePath* ReturnPath();
+        std::vector< std::vector<double> > ReturnSimulations();
 };
