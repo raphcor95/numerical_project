@@ -3,6 +3,14 @@
 #include <deque>
 #include <iostream>
 
+
+/* Black Scholes Formulas */
+double BSCall(double spot, double strike, double vol, double rate, double matu);
+double BSPut(double spot, double strike, double vol, double rate, double matu);
+
+/* Statistical Formulas */
+double norm_cdf(double x);
+
 std::vector<std::vector<std::vector<double>>> generate_antithetic(Normal* Gen, size_t dim_sim, size_t dim_steps, size_t dim_undl);
 
 

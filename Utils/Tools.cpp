@@ -3,6 +3,31 @@
 #include <vector>
 #include <iostream>
 
+/* Black Scholes Formulas */
+double BSCall(double spot, double strike, double vol, double rate, double matu)
+{
+    double d1 = (log(spot / strike) + (rate + (vol * vol)/2) * matu) / (vol * std::sqrt(matu));
+    double d2 = d1 - vol * std::sqrt(matu);
+
+    return spot * norm_cdf(d1) - strike * exp(- rate * matu) * norm_cdf(d2);
+}
+
+/* Black Scholes Formulas */
+double BSPut(double spot, double strike, double vol, double rate, double matu)
+{
+    double d1 = (log(spot / strike) + (rate + (vol * vol)/2) * matu) / (vol * std::sqrt(matu));
+    double d2 = d1 - vol * std::sqrt(matu);
+
+    return strike * exp(- rate * matu) * norm_cdf(-d2) - spot * norm_cdf(-d1);
+}
+
+
+/* Statistical Formulas */
+double norm_cdf(double x)
+{
+    return 0.5 * std::erfc(- x / std::sqrt(2));
+}
+
 std::vector<std::vector<std::vector<double>>> generate_antithetic(Normal* Gen, size_t dim_sim, size_t dim_steps, size_t dim_undl)
 {
     std::vector<std::vector<std::vector<double>>> results(dim_sim, std::vector<std::vector<double>>(dim_steps, std::vector<double>(dim_undl, 0.0)));
