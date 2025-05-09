@@ -12,4 +12,5 @@ class EuropeanCall: public Payoff{
         EuropeanCall(double strike);
         ~EuropeanCall();
         double operator()(const std::vector<double>& vecPath) override;
+        const double GetStrike();
 };
