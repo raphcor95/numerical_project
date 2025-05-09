@@ -14,6 +14,11 @@ Underlying::~Underlying()
 
 }
 
+// Get weights
+std::vector<double>& Underlying::GetWeights()
+{
+    return VecWeights;
+}
 // Return Path Method
 SinglePath* Underlying::ReturnPath()
 {
