@@ -88,8 +88,8 @@ double MonteCarlo::Price(Payoff* payoff, bool ControlVariate) {
             double ControlVariable =  std::inner_product(std::begin(vecW), std::end(vecW), std::begin(vecSpotsFinal), 0.0);
             std::vector<double> VecControlVariable = {exp(ControlVariable)};
 
-            std::cout << "[MC] Terminal value " << Path->GetValue(EndTime) << std::endl;
-            std::cout << "[MC] Terminal terminal value " << exp(ControlVariable) << std::endl;
+            // std::cout << "[MC] Terminal value " << Path->GetValue(EndTime) << std::endl;
+            // std::cout << "[MC] Terminal terminal value " << exp(ControlVariable) << std::endl;
             
             sumPayoff +=  exp(-Rate * EndTime) *(
                 (*payoff)(Path->GetValues()) - (*payoff)(VecControlVariable)
