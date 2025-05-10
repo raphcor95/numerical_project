@@ -2,6 +2,7 @@
 #include <vector>
 #include "../Pricers/MonteCarlo/MonteCarlo.h"
 #include "../Payoffs/EuropeanCall.h"
+#include "../Payoffs/EuropeanPut.h"
 #include "../RandomGenerators/UniformGenerators/EcuyerCombined.h"
 #include "../RandomGenerators/UniformGenerators/LinearCongruential.h"
 #include "../RandomGenerators/QuasiRandomGenerators/LDSequences/HaltonVdC.h"
@@ -17,25 +18,26 @@ int main() {
     // === Simulation Parameters ===
     double startTime = 0.0;
     double spot = 100.0;
-    double strike = 85.0;
-    double rate = 0.25;
+    double strike = 120.0;
+    double rate = 0.20;
     double endTime = 1.0;
     size_t nbSteps = 252;
-    size_t nbSim = 1;
+    size_t nbSim = 10000;
 
     std::vector<double> vecSpots(3, spot);
     std::vector<double> vecRates(3, rate);
-    std::vector<double> vecWeights = {1.0, 0.0, 0.0};
+    // std::vector<double> vecWeights = {0.2, 0.5, 0.3};
+    std::vector<double> vecWeights = {1, 0, 0};
     Input* Inp = new Input();
     Matrix* matCov = Inp->CSV2Mat("Inputs/matCov.csv");
 
     // === Class Instances ===
     UniformGenerator* Unif = new EcuyerCombined();
-    // LDSequence* LDS = new HaltonVdC(3);
+    LDSequence* LDS = new HaltonVdC(3);
     // QuasiRandomNormal* Norm = new NormInvCDF(0.0, 1.0, LDS);
     Normal* Norm = new NormalBoxMuller(0.0, 1.0, Unif);
-    RandomProcess* BSEulerBasket = new BSEulerND(Norm, vecSpots, vecRates, matCov);
-    // RandomProcess* BSEulerBasket = new BSEulerNDAnti(Norm, vecSpots, vecRates, matCov);
+    // RandomProcess* BSEulerBasket = new BSEulerND(Norm, vecSpots, vecRates, matCov);
+    RandomProcess* BSEulerBasket = new BSEulerNDAnti(Norm, vecSpots, vecRates, matCov);
     Underlying* myBasket = new Basket(BSEulerBasket, 100.0, vecWeights);
 
     MonteCarlo* mc = new MonteCarlo(
@@ -43,17 +45,19 @@ int main() {
     );
 
     // === Simulation ===
-    // std::vector<std::vector<double>> SimulatedPaths = mc->Simulate();
+    std::vector<std::vector<double>> SimulatedPaths = mc->Simulate();
 
     // === Output the simulations ===
-    // Output* Out = new Output();
-    // Out->Vec2CSV(SimulatedPaths, "Outputs/MonteCarlo_Simulations.csv");
-    // std::cout << "Outputting the results in: Outputs/MonteCarlo_Simulations.csv" << std::endl;
+    Output* Out = new Output();
+    Out->Vec2CSV(SimulatedPaths, "Outputs/MonteCarlo_Simulations.csv");
+    std::cout << "Outputting the results in: Outputs/MonteCarlo_Simulations.csv" << std::endl;
 
     // === Compute Payoff option ===
-    Payoff* myCall = new EuropeanCall(strike);
-    double final_payoff = mc->Price(myCall, true);
-    double BSPrice = BSCall(spot, strike, 0.1, rate, endTime);
+    // Payoff* payoff = new EuropeanCall(strike);
+    Payoff* payoff = new EuropeanPut(strike);
+    double final_payoff = mc->Price(payoff, false);
+    // double BSPrice = BSCall(spot, strike, 0.1, rate, endTime);
+    double BSPrice = BSPut(spot, strike, 0.1, rate, endTime);
     std::cout << "Option price: " << final_payoff << std::endl;
     std::cout << "Black Scholes Price: " << BSPrice << std::endl;
     // === Cleaning ===
