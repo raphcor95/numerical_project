@@ -1,3 +1,4 @@
 *.json
 *.oOutputs/MonteCarlo_Simulations.csv
 *.o
+*.csv
