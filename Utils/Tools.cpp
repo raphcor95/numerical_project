@@ -44,7 +44,7 @@ double ComputeCVExpectation(
 {
 
     // Variables
-    double prodSiWi = 0.0;
+    double prodSiWi = 1.0;
     double adjRate = 0.0;
     double adjVol = 0.0;
 
@@ -56,19 +56,25 @@ double ComputeCVExpectation(
     // Convert weight vectors into matrices
     std::vector< std::vector<double> > matWeights = {vecWeights};
     Matrix MatRowW = Matrix(matWeights);
+    MatRowW.print(); 
 
     // Compute matrix products
     double matProd = MatRowW.matrix_product(
-        MatSigma.transpose().matrix_product(
-            MatSigma.matrix_product(MatRowW.transpose())
+        MatSigma.matrix_product(
+            MatSigma.transpose().matrix_product(MatRowW.transpose())
         )
     )(0, 0);
 
+
     // Compute product of spots and adjusted rate
+    Matrix MatSigmaSigma = MatSigma.matrix_product(MatSigma.transpose());
+    MatSigmaSigma.print();
     for (int d = 0; d < vecWeights.size(); d++)
     {
-        prodSiWi += pow(vecSpots[d], vecWeights[d]);
-        adjRate += vecWeights[d] * (*MatCov)(d, d) * (*MatCov)(d, d);
+        // Compute variance
+        double var = MatSigmaSigma(d, d);
+        prodSiWi *= pow(vecSpots[d], vecWeights[d]);
+        adjRate += vecWeights[d] * var;
     }
     adjRate = rate - 0.5 * adjRate + 0.5 * matProd;
 
