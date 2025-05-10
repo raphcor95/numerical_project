@@ -16,8 +16,9 @@ MonteCarlo::MonteCarlo(
     double nbSim,
     double startTime,
     double endTime,
-    size_t nbSteps
-) : Pricer(myBasket, nbSim, startTime, endTime, nbSteps)
+    size_t nbSteps,
+    double rate
+) : Pricer(myBasket, nbSim, startTime, endTime, nbSteps, rate)
 
 {}
 
@@ -35,37 +36,68 @@ std::vector<std::vector<double>> MonteCarlo::Simulate() {
     return SimulatedPaths;
 }
 
-double MonteCarlo::Price(Payoff* payoff) {
-    double sumPayoff = 0.0;
-    for (size_t i = 0; i < static_cast<size_t>(NbSim); ++i) {
-        Undl->Simulate(StartTime, EndTime, NbSteps);
-        SinglePath* Path = Undl->ReturnPath();
-        // TODO modifier pour recuperer la vrai valeur des taux
-        sumPayoff += std::exp(-0.05 * this->EndTime) * (*payoff)(Path->GetValues());
-    }
-    return sumPayoff / NbSim;
-}
+double MonteCarlo::Price(Payoff* payoff, bool ControlVariate) {
 
-double MonteCarlo::priceControlVariate(Payoff* payoff)
-{
+    // Variables
     double sumPayoff = 0.0;
 
-    // TODO modifier pour donner la valeur de balck scholes
-    double control_variate_payoff = 6.8; //compute_expected_value_control_variate(spots, weights, strike, rates[0], corrMatrix, maturity);
-
-    for (int n = 0; n < static_cast<size_t>(NbSim); ++n)
+    // Pricing depending on wether there is control variate or not
+    if (!ControlVariate)
     {
-        Undl->Simulate(StartTime, EndTime, NbSteps);
-        std::vector< std::vector<double> > spot_vectors = Undl->ReturnSimulations();
-        std::vector<double> log_spots(spot_vectors[n].size());
-        for (int j = 0; j < spot_vectors[n].size(); j++)
-            log_spots[j] = log(spot_vectors[n][j]);
-        SinglePath* Path = Undl->ReturnPath();
-        // TODO modifier pour recuperer la vrai valeur des taux
-        sumPayoff += std::exp(-0.05 * this->EndTime) * (*payoff)(Path->GetValues());
-        double weighted_log_spots = std::inner_product(std::begin(weights), std::end(weights), std::begin(log_spots), 0.0);
-        sumPayoff -= std::exp(-0.05 * this->EndTime) * std::max(exp(weighted_log_spots) - strike, 0.);
-        sumPayoff += control_variate_payoff;
+        std::cout << "[MC] Monte Carlo Pricing without Control Variate ..." << std::endl;
+        // Loop on the simulations
+        for (size_t i = 0; i < static_cast<size_t>(NbSim); ++i) {
+            Undl->Simulate(StartTime, EndTime, NbSteps);
+            SinglePath* Path = Undl->ReturnPath();
+            sumPayoff += (*payoff)(Path->GetValues());
+        }
+
+        // Return the discounted price
+        std::cout << "[MC] Monte Carlo Pricing terminated." << std::endl;
+        return exp(-Rate * EndTime) * sumPayoff / NbSim;
     }
-    return sumPayoff / NbSim;
+    else
+    {   
+        std::cout << "[MC] Monte Carlo Pricing with Control Variate ..." << std::endl;
+
+        // Compute the expected value of the Control Variate variable
+        std:vector<double> vecSpots = Undl->GetSpots();
+        std::vector<double> vecW = Undl->GetWeights();
+        double cvExpectation = ComputeCVExpectation(vecSpots,Undl->GetWeights(),
+            payoff->GetStrike(), Rate, Undl->GetMatCov(), EndTime, payoff);
+
+        std::cout << "[MC] Control Variate Expectation: " << cvExpectation << std::endl;
+
+        // Loop on the simulations
+        for (size_t i = 0; i < static_cast<size_t>(NbSim); ++i) 
+        {
+
+            // Simulate standard trajectory
+            Undl->Simulate(StartTime, EndTime, NbSteps);
+            SinglePath* Path = Undl->ReturnPath();
+
+            // Retrieve simulation for the Control Variate variable
+            std::vector< std::vector<double> > vecSim = Undl->ReturnSimulations();
+            std::vector<double> vecSpotsFinal = Undl->ReturnSimulations()[i];
+            for (size_t d = 0; d < vecSpotsFinal.size(); d++)
+            {
+                vecSpotsFinal[d] = log(vecSpotsFinal[d]);
+            }
+
+            // Compute the control variate variable
+            double ControlVariable =  std::inner_product(std::begin(vecW), std::end(vecW), std::begin(vecSpotsFinal), 0.0);
+            std::vector<double> VecControlVariable = {exp(ControlVariable)};
+
+            std::cout << "[MC] Terminal value " << Path->GetValue(EndTime) << std::endl;
+            std::cout << "[MC] Terminal terminal value " << exp(ControlVariable) << std::endl;
+            
+            sumPayoff +=  exp(-Rate * EndTime) *(
+                (*payoff)(Path->GetValues()) - (*payoff)(VecControlVariable)
+                ) + cvExpectation;
+        }
+
+        // Return the discounted price
+        std::cout << "[MC] Control Variate Monte Carlo Pricing terminated." << std::endl;
+        return sumPayoff / NbSim;
+    }
 }

@@ -15,14 +15,13 @@ class MonteCarlo : public Pricer
             double nbSim,
             double startTime,
             double endTime,
-            size_t nbSteps
+            size_t nbSteps,
+            double rate
         );
         
         ~MonteCarlo();
         // Function to do the simulations
         std::vector<std::vector<double>> Simulate();
         // Function to price by simulating
-        double Price(Payoff* payoff);
-        double MonteCarlo::priceControlVariate(Payoff* payoff);
-
+        double Price(Payoff* payoff, bool ControlVariate);
 };
