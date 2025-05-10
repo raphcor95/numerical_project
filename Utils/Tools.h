@@ -1,4 +1,6 @@
 #pragma once
+#include "Matrix.h"
+#include "../Payoffs/Payoff.h"
 #include "../Processes/RandomProcess.h"
 #include <deque>
 #include <iostream>
@@ -10,6 +12,17 @@ double BSPut(double spot, double strike, double vol, double rate, double matu);
 
 /* Statistical Formulas */
 double norm_cdf(double x);
+
+/* Control Variate Expected Values */
+double ComputeCVExpectation(
+    std::vector<double>& vecSpots,
+    std::vector<double>& vecWeights,
+    double strike, 
+    double rate,
+    Matrix* MatCov,
+    double matu,
+    Payoff* payoff
+);
 
 std::vector<std::vector<std::vector<double>>> generate_antithetic(Normal* Gen, size_t dim_sim, size_t dim_steps, size_t dim_undl);
 

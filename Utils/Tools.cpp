@@ -28,6 +28,66 @@ double norm_cdf(double x)
     return 0.5 * std::erfc(- x / std::sqrt(2));
 }
 
+
+
+
+/* Control Variate Expected Values */
+double ComputeCVExpectation(
+    std::vector<double>& vecSpots,
+    std::vector<double>& vecWeights,
+    double strike,
+    double rate,
+    Matrix* MatCov,
+    double matu,
+    Payoff* payoff
+)
+{
+
+    // Variables
+    double prodSiWi = 0.0;
+    double adjRate = 0.0;
+    double adjVol = 0.0;
+
+    // Compute the sigma sigma transpose matrix
+    std::pair<Matrix, Matrix> cholesky = (*MatCov).choleskyDecomposition();
+    Matrix MatSigma = cholesky.first;
+
+
+    // Convert weight vectors into matrices
+    std::vector< std::vector<double> > matWeights = {vecWeights};
+    Matrix MatRowW = Matrix(matWeights);
+
+    // Compute matrix products
+    double matProd = MatRowW.matrix_product(
+        MatSigma.transpose().matrix_product(
+            MatSigma.matrix_product(MatRowW.transpose())
+        )
+    )(0, 0);
+
+    // Compute product of spots and adjusted rate
+    for (int d = 0; d < vecWeights.size(); d++)
+    {
+        prodSiWi += pow(vecSpots[d], vecWeights[d]);
+        adjRate += vecWeights[d] * (*MatCov)(d, d) * (*MatCov)(d, d);
+    }
+    adjRate = rate - 0.5 * adjRate + 0.5 * matProd;
+
+    // Compute price
+    if(payoff->Name == "Call")
+    {
+        return BSCall(prodSiWi, strike, std::sqrt(matProd), adjRate, matu);
+    }
+    if(payoff->Name == "Put")
+    {
+        return BSPut(prodSiWi, strike, std::sqrt(matProd), adjRate, matu);
+    }
+    else
+    {
+        throw std::runtime_error("Payoff " + payoff->Name + " not implented yet!");
+    }
+
+}
+
 std::vector<std::vector<std::vector<double>>> generate_antithetic(Normal* Gen, size_t dim_sim, size_t dim_steps, size_t dim_undl)
 {
     std::vector<std::vector<std::vector<double>>> results(dim_sim, std::vector<std::vector<double>>(dim_steps, std::vector<double>(dim_undl, 0.0)));
