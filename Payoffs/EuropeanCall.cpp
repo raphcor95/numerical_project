@@ -3,7 +3,7 @@
 using namespace std;
 
 
-EuropeanCall::EuropeanCall(double strike) : strike(strike) {}
+EuropeanCall::EuropeanCall(double strike) : Payoff("Call"), strike(strike) {}
 
 EuropeanCall::~EuropeanCall() {}
 

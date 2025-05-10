@@ -2,7 +2,7 @@
 
 using namespace std;
 
-Payoff::Payoff()
+Payoff::Payoff(std::string name) : Name(name)
 {
 }
 
