@@ -6,9 +6,10 @@ class LSLaguerrePoly : public LongstaffSchwarz
 {
     public:
         LSLaguerrePoly(Underlying* undl, std::vector<double> times,
-            double nbSim, double startTime, double endTime, size_t nbSteps);
+            double nbSim, double startTime, double endTime, size_t nbSteps,
+            double rate);
         ~LSLaguerrePoly();
-        double Price(Payoff* payoff);
+        double Price(Payoff* payoff, bool ControlVariate);
     
     private:
         double Order0Poly(double x);

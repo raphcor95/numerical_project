@@ -9,9 +9,10 @@ LSLaguerrePoly::LSLaguerrePoly(
     double nbSim,
     double startTime,
     double endTime,
-    size_t nbSteps
+    size_t nbSteps,
+    double rate
 ) : 
-    LongstaffSchwarz(undl, times, nbSim, startTime, endTime, nbSteps)
+    LongstaffSchwarz(undl, times, nbSim, startTime, endTime, nbSteps, rate)
 {
 
 }
@@ -46,7 +47,7 @@ double LSLaguerrePoly::ComputeExpectedValue(Matrix& MatColAlphas, double x)
 
 
 /* Pricing Method Implementation */
-double LSLaguerrePoly::Price(Payoff* payoff)
+double LSLaguerrePoly::Price(Payoff* payoff, bool ControlVariate)
 {   
     std::cout << "[LSLaguerre] Initiating the pricing ..." << std::endl;
 
@@ -78,11 +79,15 @@ double LSLaguerrePoly::Price(Payoff* payoff)
 
     // Initialisation of the Optimal Exercise @ Values
     std::cout << "[LSLaguerre] Initialising the optimal times/values." << std::endl;
+    double minPrice = 0.0;
     for (size_t j= 0; j < NbSim; j++)
     {
         vecContinue[j] = (*payoff)(VecPaths[j]->GetValues());
         vecOptiTime[j] = EndTime;
+        minPrice += vecContinue[j] * exp(-0.05) / NbSim * 100 ;
     }
+    std::cout << "[LSLaguerre] Minimal price (European Payoff): " << minPrice << std::endl;
+
 
     // Loop on the exercise dates backwards
     std::cout << "[LSLaguerre] Looping on observation dates ..." << std::endl;
@@ -92,13 +97,19 @@ double LSLaguerrePoly::Price(Payoff* payoff)
         double t = VecTimes[idx];
         std::cout << "[LSLaguerre] Running computations for t = " << t << std::endl;
 
+        // Case where the payoff is evaluated at maturity
+        if (t == EndTime)
+        {
+            continue;
+        }
+
         // Compute exercise value
         std::cout << "[LSLaguerre] Computing immediate exercise values ..." << std::endl;
         for (size_t j = 0; j < NbSim; j++)
         {
             vecExercise[j] = (*payoff)(VecPaths[j]->GetValuesUpToT(t));
         }
-
+        
         // Preliminary computation for the Conditional Expectation Approximation
         std::cout << "[LSLaguerre] Alpha preliminary computations ..." << std::endl;
         for (size_t i = 0; i < (vecAlpha).size(); i++)
@@ -199,7 +210,7 @@ double LSLaguerrePoly::Price(Payoff* payoff)
                     throw std::runtime_error("Polynomial of order " + std::to_string(i) + "not supported.");
             }   
         }
-        std::cout << "[LS] Preliminary computations completed!" << std::endl;
+        std::cout << "[LSLaguerre] Preliminary computations completed!" << std::endl;
 
         /* Now that we have all the coefficients to solve the linear systemn we determine alphas */
         
@@ -208,8 +219,8 @@ double LSLaguerrePoly::Price(Payoff* payoff)
         Matrix MatPiYj = Matrix(vecSumPiYj);
 
         // Sanity check for invertibility
-        std::cout << "[LSLaguerre] Matrix Determinant: " << H.determinant() << std::endl;
-        H.print();
+        // std::cout << "[LSLaguerre] Matrix Determinant: " << H.determinant() << std::endl;
+        // H.print();
 
         // Compute the optimal alphas
         Matrix MatColAlphas = (H.inverse()).matrix_product(MatPiYj);
@@ -219,7 +230,7 @@ double LSLaguerrePoly::Price(Payoff* payoff)
         std::cout << "[LSLaguerre] Compute optimal decision value for date " << t << std::endl;
         for (size_t j = 0; j < NbSim; j++)
         {
-            if (vecExercise[j > ComputeExpectedValue(MatColAlphas, vecUpToT[j].back())])
+            if (vecExercise[j] > ComputeExpectedValue(MatColAlphas, vecUpToT[j].back()))
             {
                 // Update the optimal exercise rule to t
                 vecOptiTime[j] = t;
@@ -232,8 +243,8 @@ double LSLaguerrePoly::Price(Payoff* payoff)
     std::cout << "[LSLaguerre] Averaging Discounted Optimal Exercise Values ..." << std::endl;
     for (size_t j = 0; j < NbSim; j++)
     {
-        price += (1 / NbSim) * vecContinue[j] * exp(-rate * (-vecOptiTime[j]));
+        price += (1 / NbSim) * vecContinue[j] * exp(-rate * (vecOptiTime[j]));
     }
 
-    return price;
+    return 100 * price;
 }
