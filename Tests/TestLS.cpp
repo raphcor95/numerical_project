@@ -21,10 +21,10 @@ int main()
         double rate = 0.05;
         double vol = 0.1;
         double spot = 100;
-        double strike = 85.0;
+        double strike = 120.0;
         double startTime = 0;
         double endTime = 1;
-        double nbSim = 100;
+        double nbSim = 1000;
         size_t nbSteps = 100;
 
         // Generators
@@ -50,7 +50,7 @@ int main()
         // Longstaff Schwarz Pricer - Laguerre Polynomials
         std::vector<double> vecTimes = {0.2, 0.4, 0.6, 1.0};
         // std::vector<double> vecTimes = {1.0};
-        int order = 5;
+        int order = 3;
         // LongstaffSchwarz* PricerLS = new LSLaguerrePoly(myBasket, vecTimes, nbSim,
         //                             startTime, endTime, nbSteps);
         LongstaffSchwarz* PricerLS = new LSStandard(myBasket, vecTimes, nbSim,
@@ -73,10 +73,10 @@ int main()
         std::cout << "Outputting the results in: Outputs/LSBasket_Simulations.csv" << std::endl;
         
         // Payoff
-        Payoff* payoff = new EuropeanCall(strike);
-        // Payoff* payoff = new EuropeanPut(strike);
-        double BSPrice = BSCall(spot, strike, vol, rate, endTime);
-        // double BSPrice = BSPut(spot, strike, vol, rate, endTime);
+        // Payoff* payoff = new EuropeanCall(strike);
+        Payoff* payoff = new EuropeanPut(strike);
+        // double BSPrice = BSCall(spot, strike, vol, rate, endTime);
+        double BSPrice = BSPut(spot, strike, vol, rate, endTime);
         double price = PricerLS->Price(payoff, ControlVariate);
         std::cout << "BS Price of the Bermudan Option: " << price << std::endl;
         std::cout << "BS Price of the European Option: " << BSPrice << std::endl;
