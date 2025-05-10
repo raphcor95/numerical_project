@@ -114,7 +114,7 @@ const std::vector<double>& BlackScholesND::GetRates() const
     return VecRates;
 }
 
-Matrix* BlackScholesND::GetMat()
+Matrix* BlackScholesND::GetMatCov() const
 {
     return MatCov;
 }

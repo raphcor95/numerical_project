@@ -81,6 +81,9 @@ void GenerateBSEulerND(Normal* Norm,
         paths[i] = BSEulerMulti->GetPath(i)->GetValues();
     }
 
+    Matrix* MatCov = BSEulerMulti->GetMatCov();
+    MatCov->print();
+
     // Output the simulations
     Output* Out = new Output();
     Out->Vec2CSV(paths, "Outputs/PseudoBSEulerND_Simulations.csv");
@@ -191,7 +194,7 @@ int main()
     double rate = 0.05;
     double vol = 0.1;
     double spot = 100;
-    double nbSim = 1000;
+    double nbSim = 5000;
     double startTime = 0;
     double endTime = 1;
     size_t nbSteps = 365;
