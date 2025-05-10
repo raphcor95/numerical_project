@@ -19,6 +19,14 @@ std::vector<double>& Underlying::GetWeights()
 {
     return VecWeights;
 }
+
+// Getter for the generator
+Matrix* Underlying::GetMatCov() const
+{
+    return Generator->GetMatCov();
+}
+
+
 // Return Path Method
 SinglePath* Underlying::ReturnPath()
 {
