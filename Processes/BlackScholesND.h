@@ -23,8 +23,8 @@ class BlackScholesND : public RandomProcess
         ~BlackScholesND();
 
         // Getters
-        const std::vector<double>& GetSpots() const;
-        const std::vector<double>& GetRates() const;
+        std::vector<double> GetSpots() const;
+        std::vector<double> GetRates() const;
         Matrix* GetMatCov() const;
 };
 

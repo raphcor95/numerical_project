@@ -104,12 +104,7 @@ BlackScholesND::BlackScholesND(QuasiRandomNormal* Gen,
 }
 
 // Getters
-const std::vector<double>& BlackScholesND::GetSpots() const 
-{
-    return VecSpots;
-}
-
-const std::vector<double>& BlackScholesND::GetRates() const 
+std::vector<double> BlackScholesND::GetRates() const 
 {
     return VecRates;
 }
@@ -117,6 +112,11 @@ const std::vector<double>& BlackScholesND::GetRates() const
 Matrix* BlackScholesND::GetMatCov() const
 {
     return MatCov;
+}
+
+std::vector<double> BlackScholesND::GetSpots() const
+{
+    return VecSpots;
 }
 
 BlackScholesND::~BlackScholesND()

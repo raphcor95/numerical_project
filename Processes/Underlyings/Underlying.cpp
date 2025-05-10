@@ -26,6 +26,12 @@ Matrix* Underlying::GetMatCov() const
     return Generator->GetMatCov();
 }
 
+// Getter for the spots
+std::vector<double> Underlying::GetSpots()
+{
+    return Generator->GetSpots();
+}
+
 
 // Return Path Method
 SinglePath* Underlying::ReturnPath()
