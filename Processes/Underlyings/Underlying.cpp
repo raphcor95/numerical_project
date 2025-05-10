@@ -26,7 +26,7 @@ SinglePath* Underlying::ReturnPath()
 }
 
 // Return vector simulations
-std::vector< std::vector<double> > Underlying::ReturnSimulations()
+std::vector< std::vector<double> >& Underlying::ReturnSimulations()
 {
     return VecPaths;
 }

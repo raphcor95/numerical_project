@@ -18,5 +18,5 @@ class Underlying
         //                                std::vector< std::vector<double> >* vecW_anti = nullptr) = 0;
         std::vector<double>& GetWeights();
         SinglePath* ReturnPath();
-        std::vector< std::vector<double> > ReturnSimulations();
+        std::vector< std::vector<double> >& ReturnSimulations();
 };
