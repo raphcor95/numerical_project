@@ -116,11 +116,6 @@ double LSStandard::Price(Payoff* payoff, bool ControlVariate)
         Matrix Y = Matrix(vecY);
         Matrix X = Matrix(vecX);
 
-        // Preliminary computation for the Conditional Expectation Approximation
-        std::cout << "[LSStandard] Alpha preliminary computations ..." << std::endl;
-    
-        std::cout << "[LSStandard] Preliminary computations completed!" << std::endl;
-
         /* Now that we have all the coefficients to solve the linear systemn we determine alphas */
     
         // Compute the optimal alphas
