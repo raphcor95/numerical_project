@@ -13,6 +13,7 @@ class Pricer
         double Rate;
 
     public:
+        std::vector<double> VecPrices;
         Pricer(Underlying* undl, double nbSim, double startTime, double endTime, size_t nbSteps,
                     double rate);
         ~Pricer();

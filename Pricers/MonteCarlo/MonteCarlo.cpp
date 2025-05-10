@@ -41,6 +41,9 @@ double MonteCarlo::Price(Payoff* payoff, bool ControlVariate) {
     // Variables
     double sumPayoff = 0.0;
 
+    // Clear the price vector to prepare for new generation
+    VecPrices.clear();
+
     // Pricing depending on wether there is control variate or not
     if (!ControlVariate)
     {
@@ -49,12 +52,13 @@ double MonteCarlo::Price(Payoff* payoff, bool ControlVariate) {
         for (size_t i = 0; i < static_cast<size_t>(NbSim); ++i) {
             Undl->Simulate(StartTime, EndTime, NbSteps);
             SinglePath* Path = Undl->ReturnPath();
-            sumPayoff += (*payoff)(Path->GetValues());
+            VecPrices.push_back((*payoff)(Path->GetValues()) * exp(-Rate * EndTime));
+            sumPayoff += VecPrices[i];
         }
 
         // Return the discounted price
         std::cout << "[MC] Monte Carlo Pricing terminated." << std::endl;
-        return exp(-Rate * EndTime) * sumPayoff / NbSim;
+        return sumPayoff / NbSim;
     }
     else
     {   
@@ -87,13 +91,12 @@ double MonteCarlo::Price(Payoff* payoff, bool ControlVariate) {
             // Compute the control variate variable
             double ControlVariable =  std::inner_product(std::begin(vecW), std::end(vecW), std::begin(vecSpotsFinal), 0.0);
             std::vector<double> VecControlVariable = {exp(ControlVariable)};
-
-            // std::cout << "[MC] Terminal value " << Path->GetValue(EndTime) << std::endl;
-            // std::cout << "[MC] Terminal terminal value " << exp(ControlVariable) << std::endl;
-            
-            sumPayoff +=  exp(-Rate * EndTime) *(
+            double ControlPrice = exp(-Rate * EndTime) * (
                 (*payoff)(Path->GetValues()) - (*payoff)(VecControlVariable)
                 ) + cvExpectation;
+            VecPrices.push_back(ControlPrice);
+
+            sumPayoff += ControlPrice;
         }
 
         // Return the discounted price
