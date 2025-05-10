@@ -7,13 +7,15 @@ Pricer::Pricer(
     double nbSim,
     double startTime,
     double endTime,
-    size_t nbSteps
+    size_t nbSteps,
+    double rate
 ) : 
     Undl(undl),
     NbSim(nbSim),
     StartTime(startTime),
     EndTime(endTime),
-    NbSteps(nbSteps)
+    NbSteps(nbSteps),
+    Rate(rate)
 {
 
 }

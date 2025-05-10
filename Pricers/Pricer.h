@@ -10,9 +10,11 @@ class Pricer
         double StartTime;
         double EndTime;
         size_t NbSteps;
+        double Rate;
 
     public:
-        Pricer(Underlying* undl, double nbSim, double startTime, double endTime, size_t nbSteps);
+        Pricer(Underlying* undl, double nbSim, double startTime, double endTime, size_t nbSteps,
+                    double rate);
         ~Pricer();
-        virtual double Price(Payoff* payoff) = 0;
+        virtual double Price(Payoff* payoff, bool ControlVariate) = 0;
 };
