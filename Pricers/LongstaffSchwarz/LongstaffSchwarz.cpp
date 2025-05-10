@@ -8,9 +8,10 @@ LongstaffSchwarz::LongstaffSchwarz(
     double nbSim,
     double startTime,
     double endTime,
-    size_t nbSteps
+    size_t nbSteps,
+    double rate
 ) : 
-    Pricer(undl, nbSim, startTime, endTime, nbSteps),
+    Pricer(undl, nbSim, startTime, endTime, nbSteps, rate),
     VecTimes(times)
 {
     // Verification of the inputs

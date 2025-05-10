@@ -1,9 +1,7 @@
 #pragma once
 #include "../Pricer.h"
+#include "Matrix.h"
 
-/* This class implements LongstaffScharz algorithm with the Laguerre
-polynomials from order 0 up to order 2, as suggested in the authors 
-original paper for the American Put option pricing */
 
 class LongstaffSchwarz : public Pricer
 {
@@ -13,8 +11,10 @@ class LongstaffSchwarz : public Pricer
 
     public:
         LongstaffSchwarz(Underlying* undl, std::vector<double> times,
-                        double nbSim, double startTime, double endTime, size_t nbSteps);
+                        double nbSim, double startTime, double endTime, size_t nbSteps,
+                        double rate);
         ~LongstaffSchwarz();
         void Simulate();
+        virtual double ComputeExpectedValue(Matrix& MatColAlphas, double x) = 0;
         const std::vector<SinglePath*>& ReturnPaths() const;
 };
