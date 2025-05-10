@@ -121,7 +121,7 @@ double LSStandard::Price(Payoff* payoff, bool ControlVariate)
         // Compute the optimal alphas
         Matrix MatColAlphas = (
             X.transpose().matrix_product(X)
-        ).inverse().matrix_product(
+        ).InverseLU().matrix_product(
             X.transpose().matrix_product(Y)
         );
         
@@ -129,8 +129,6 @@ double LSStandard::Price(Payoff* payoff, bool ControlVariate)
         std::cout << "[LSStandard] Update optimal decisions" << std::endl;
         for (size_t i = 0; i < NbSim; i++)
         {   
-            // vecExpected[i][idx] = ComputeExpectedValue(MatColAlphas, vecUpToT[i].back());
-            std::cout << ComputeExpectedValue(MatColAlphas, vecUpToT[i].back()) << std::endl;
             if (vecExercise[i] > ComputeExpectedValue(MatColAlphas, vecUpToT[i].back()))
             {
                 // Update the optimal exercise rule to t
