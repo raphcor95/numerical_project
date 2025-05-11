@@ -56,6 +56,11 @@ public:
     bool isInvertible() const;
     Matrix inverse() const;
 
+    // Methods to perform LU Inversion
+    Matrix ForwardSubstitution(const Matrix& L, const Matrix& b) const;
+    Matrix BackSubstitution(const Matrix& U, Matrix& y) const;
+    Matrix InverseLU() const;
+
 private:
     double determinantRecursive(const std::vector< std::vector<double> >& mat) const;
     std::vector< std::vector<double> > getMinor(const std::vector< std::vector<double> >& mat, 

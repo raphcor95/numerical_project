@@ -250,3 +250,80 @@ Matrix Matrix::inverse() const {
     }
     return adj;
 }
+
+
+
+/* Inverting a matrix using LU Decomposition */
+Matrix Matrix::ForwardSubstitution(const Matrix& L, const Matrix& b) const {
+    size_t n = L.getRows();
+    Matrix y(n, 1);
+
+    for (size_t i = 0; i < n; ++i) {
+        double sum = 0.0;
+        for (size_t j = 0; j < i; ++j) {
+            sum += L(i, j) * y(j, 0);
+        }
+        y(i, 0) = (b(i, 0) - sum);  // L(i,i) == 1 in your LU
+    }
+
+    return y;
+}
+
+Matrix Matrix::BackSubstitution(const Matrix& U, Matrix& y) const {
+    size_t n = U.getRows();
+    Matrix x(n, 1);
+
+    for (int i = (int)n - 1; i >= 0; --i) {
+        double sum = 0.0;
+        for (size_t j = i + 1; j < n; ++j) {
+            sum += U(i, j) * x(j, 0);
+        }
+        x(i, 0) = (y(i, 0) - sum) / U(i, i);
+    }
+
+    return x;
+}
+
+Matrix Matrix::InverseLU() const {
+    if (!isSquare()) {
+        throw std::invalid_argument("Matrix must be square to compute inverse.");
+    }
+
+    size_t n = rows;
+    Matrix inverse(n, n);
+
+    auto [L, U] = this->luDecomposition();
+
+    for (size_t col = 0; col < n; ++col) {
+        // Construct the col-th column of identity matrix
+        Matrix e(n, 1);
+        e(col, 0) = 1.0;
+
+        // Solve L y = e
+        Matrix y = ForwardSubstitution(L, e);
+
+        // Solve U x = y
+        Matrix x = BackSubstitution(U, y);
+
+        // Store x as the col-th column of inverse
+        for (size_t row = 0; row < n; ++row) {
+            inverse(row, col) = x(row, 0);
+        }
+    }
+
+    return inverse;
+}
+
+
+// int main()
+// {
+//     std::vector<std::vector<double>> values = {
+//         {2.0, 1.0, 1.0},
+//         {4.0, -6.0, 0.0},
+//         {-2.0, 7.0, 2.0}
+//     };
+
+//     Matrix mat = Matrix(values);
+//     Matrix inv = mat.InverseLU();
+//     inv.matrix_product(mat).print();
+// }

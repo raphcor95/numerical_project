@@ -52,8 +52,8 @@ int main()
         std::vector<double> vecTimes = {0.2, 0.4, 0.6, 1.0};
         // std::vector<double> vecTimes = {1.0};
         int order = 3;
-        // LongstaffSchwarz* PricerLS = new LSLaguerrePoly(myBasket, vecTimes, nbSim,
-        //                             startTime, endTime, nbSteps, rate);
+        LongstaffSchwarz* PricerLS = new LSLaguerrePoly(myBasket, vecTimes, nbSim,
+                                    startTime, endTime, nbSteps, rate);
         LongstaffSchwarz* PricerLS = new LSStandard(myBasket, vecTimes, nbSim,
                                         startTime, endTime, nbSteps, order, rate);
 

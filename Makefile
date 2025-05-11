@@ -107,17 +107,21 @@ LS_SRCS = Tests/TestLS.cpp \
 			Processes/SinglePath.cpp \
 			Processes/RandomProcess.cpp \
 			Processes/BSEulerND.cpp \
+			Processes/BSEulerNDAnti.cpp \
 			Processes/BlackScholesND.cpp \
 			Processes/Underlyings/Underlying.cpp \
 			Processes/Underlyings/Basket.cpp \
 			Pricers/Pricer.cpp \
 			Pricers/LongstaffSchwarz/LongstaffSchwarz.cpp \
+			Pricers/LongstaffSchwarz/LSStandard.cpp \
 			Pricers/LongstaffSchwarz/LSLaguerrePoly.cpp \
 			Payoffs/Payoff.cpp \
 			Payoffs/EuropeanCall.cpp \
+			Payoffs/EuropeanPut.cpp \
 			Utils/Input.cpp \
 			Utils/Output.cpp \
-			Utils/Matrix.cpp
+			Utils/Matrix.cpp \
+			Utils/Tools.cpp
 
 			
 LS_OBJS = $(LS_SRCS:.cpp=.o)
@@ -146,6 +150,7 @@ MC_SRCS = Tests/TestMonteCarlo.cpp \
 			Pricers/MonteCarlo/MonteCarlo.cpp \
 			Payoffs/Payoff.cpp \
 			Payoffs/EuropeanCall.cpp \
+			Payoffs/EuropeanPut.cpp \
 			Pricers/Pricer.cpp \
 			Utils/Input.cpp \
 			Utils/Output.cpp \
