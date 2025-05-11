@@ -22,4 +22,7 @@ class Underlying
         SinglePath* ReturnPath();
         std::vector< std::vector< std::vector<double> > >& ReturnSimulations();
         std::vector< std::vector<double> >& ReturnSimulation(size_t sim);
+
+        // Cleaning method
+        void ClearPaths();
 };

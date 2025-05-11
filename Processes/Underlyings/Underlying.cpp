@@ -50,3 +50,9 @@ std::vector< std::vector<double> >& Underlying::ReturnSimulation(size_t sim)
 {
     return VecPaths[sim];
 }
+
+// Clearing method
+void Underlying::ClearPaths()
+{
+    VecPaths.clear();
+}

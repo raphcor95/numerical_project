@@ -43,6 +43,7 @@ double MonteCarlo::Price(Payoff* payoff, bool ControlVariate) {
 
     // Clear the price vector to prepare for new generation
     VecPrices.clear();
+    Undl->ClearPaths();
 
     // Pricing depending on wether there is control variate or not
     if (!ControlVariate)
@@ -85,7 +86,7 @@ double MonteCarlo::Price(Payoff* payoff, bool ControlVariate) {
             std::vector<double> vecSpotsFinal(vecW.size(), 0.0);
             for (int k = 0; k < vecW.size(); k++)
             {   
-                vecSpotsFinal[k] = vecSim[k][NbSteps-1];
+                vecSpotsFinal[k] = vecSim[k][NbSteps];
             }
             for (size_t d = 0; d < vecSpotsFinal.size(); d++)
             {
