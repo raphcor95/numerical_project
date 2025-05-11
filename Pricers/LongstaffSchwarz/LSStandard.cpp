@@ -171,7 +171,6 @@ double LSStandard::Price(Payoff* payoff, bool ControlVariate)
         std::cout << "[LSStandard] Computing immediate exercise values ..." << std::endl;
         if (ControlVariate)
         {
-
             // Compute new Control Variate expected valued
             double cvExpectation = ComputeCVExpectation(
                 vecSpots, vecW, payoff->GetStrike(), Rate, Undl->GetMatCov(), t, payoff
@@ -241,7 +240,7 @@ double LSStandard::Price(Payoff* payoff, bool ControlVariate)
     std::cout << "[LSStandard] Averaging Discounted Optimal Exercise Values ..." << std::endl;
     for (size_t j = 0; j < NbSim; j++)
     {
-        VecPrices.push_back((1 / NbSim) * vecContinue[j] * exp(-Rate * (vecOptiTime[j])));
+        VecPrices.push_back(vecContinue[j] * exp(-Rate * (vecOptiTime[j])));
         price += (1 / NbSim) * vecContinue[j] * exp(-Rate * (vecOptiTime[j]));
     }
 

@@ -267,9 +267,9 @@ double LSLaguerrePoly::Price(Payoff* payoff, bool ControlVariate)
     std::cout << "[LSLaguerre] Averaging Discounted Optimal Exercise Values ..." << std::endl;
     for (size_t j = 0; j < NbSim; j++)
     {
-        VecPrices.push_back((1 / NbSim) * vecContinue[j] * exp(-Rate * (vecOptiTime[j])));
+        VecPrices.push_back(100 * vecContinue[j] * exp(-Rate * (vecOptiTime[j])));
         price += (1 / NbSim) * vecContinue[j] * exp(-Rate * (vecOptiTime[j]));
     }
 
-    return price;
+    return price * 100;
 }
