@@ -56,7 +56,6 @@ double ComputeCVExpectation(
     // Convert weight vectors into matrices
     std::vector< std::vector<double> > matWeights = {vecWeights};
     Matrix MatRowW = Matrix(matWeights);
-    MatRowW.print(); 
 
     // Compute matrix products
     double matProd = MatRowW.matrix_product(
@@ -68,7 +67,6 @@ double ComputeCVExpectation(
 
     // Compute product of spots and adjusted rate
     Matrix MatSigmaSigma = MatSigma.matrix_product(MatSigma.transpose());
-    MatSigmaSigma.print();
     for (int d = 0; d < vecWeights.size(); d++)
     {
         // Compute variance
