@@ -1,7 +1,17 @@
 #include "LSLaguerrePoly.h"
 #include "Matrix.h"
+#include "Tools.h"
 #include <iostream>
 #include <cmath>
+#include <numeric>
+
+
+// Helper
+constexpr double EPSILON = 1e-5;
+auto is_close = [](double a, double b) {
+    return std::fabs(a - b) < EPSILON;
+};
+
 
 LSLaguerrePoly::LSLaguerrePoly(
     Underlying* undl,
@@ -50,180 +60,194 @@ double LSLaguerrePoly::ComputeExpectedValue(Matrix& MatColAlphas, double x)
 double LSLaguerrePoly::Price(Payoff* payoff, bool ControlVariate)
 {   
     std::cout << "[LSLaguerre] Initiating the pricing ..." << std::endl;
+    VecPrices.clear();
 
     // General Variables
     std::vector<double> vecExercise(NbSim, 0.0);            // Vector of immediate exercise
     std::vector<double> vecContinue(NbSim, 0.0);            // Vector of Continuation value
     std::vector<double> vecOptiTime(NbSim, 0.0);            // Vector of optimal times exercise
-    double rate = 0.05;
     double price = 0.0;
 
+    // Control Variate Variables
+    std::vector<double> vecIdx;
+    std::vector< std::vector<double> > vecControlVariate(NbSim);
+    std::vector<double> vecW = Undl->GetWeights();
+    std::vector<double> vecSpots = Undl->GetSpots();
 
     // Optimisation variables
     double Yj;
     double Xj;
     std::vector< std::vector<double> > vecUpToT(NbSim);
     std::vector<double> (vecAlpha)(3, 0.0);                                           // Vector for the alpha coefficients
-    std::vector< std::vector<double> > vecSumPiYj(3, std::vector<double>(1, 0.0));  // Vector containing the sum of Yj * Pi(xj)
-    std::vector< std::vector<double> > vecHil(3, std::vector<double>(3, 0.0));      // Matrix of Hij coefficients
-
 
 
     // Check whether simulations exist or if we need to simulate
     if (VecPaths.size() == 0)
     {
+        Undl->ClearPaths();
         std::cout << "[LSLaguerre] Simulating trajectories ..." << std::endl;
         Simulate();
         std::cout << "[LSLaguerre] Simulation completed!" << std::endl;
     }
 
+    // Compute Control Variate if necessary
+    if(ControlVariate)
+    {
+        // Retrieve the simulations and simulate the control variates
+        std::vector<double> vecFindIdx = VecPaths[0]->GetTimes();
+        for (int t = 0; t < static_cast<int>(NbSteps); t++)
+        {        
+            for (double target : VecTimes)
+            {
+                if (is_close(vecFindIdx[t], target))
+                {
+                    vecIdx.push_back(t);
+                    std::cout << vecIdx.back() << std::endl;
+                    std::cout << "Pushed" << std::endl;
+                    break;
+                }
+            }
+        }
+        vecIdx.push_back(NbSteps);
+
+        // Reconstruct the control variable values at each time step
+        std::vector< std::vector < std::vector<double> > > vecSimulations = Undl->ReturnSimulations();
+        for (int t = 0; t < vecIdx.size(); t++)
+        {
+            double idx = vecIdx[t];
+            std::cout << idx << std::endl;
+            for (size_t j = 0; j < NbSim; j++)
+            {
+                std::vector<double> vecLogSpot(vecW.size(), 0.0);
+                for (size_t k = 0; k < vecW.size(); k++)
+                {
+                    vecLogSpot[k] = log(vecSimulations[j][k][idx]);
+                }
+                double logspot = std::inner_product(vecW.begin(), vecW.end(), vecLogSpot.begin(), 0.0);
+                vecControlVariate[j].push_back(exp(logspot));
+            }
+        }
+    }
+    std::cout << "Size " << vecControlVariate[0].size() << std::endl;
+
+     
     // Initialisation of the Optimal Exercise @ Values
     std::cout << "[LSLaguerre] Initialising the optimal times/values." << std::endl;
     double minPrice = 0.0;
-    for (size_t j= 0; j < NbSim; j++)
+    if (ControlVariate)
     {
-        vecContinue[j] = (*payoff)(VecPaths[j]->GetValues());
-        vecOptiTime[j] = EndTime;
-        minPrice += vecContinue[j] * exp(-0.05) / NbSim * 100 ;
-    }
+        // Compute Control Variate Expectation
+        double cvExpectation = ComputeCVExpectation(
+            vecSpots, vecW, payoff->GetStrike(), Rate, Undl->GetMatCov(), EndTime, payoff
+        );
+
+
+        for (size_t j = 0; j < NbSim; j++)
+        {
+            std::vector<double> vecControlVariable = {vecControlVariate[j][vecIdx.size()-1]};
+            vecContinue[j] = (*payoff)(VecPaths[j]->GetValues()) - (*payoff)(vecControlVariable)
+                             + cvExpectation * exp(Rate * EndTime);
+            vecOptiTime[j] = EndTime;
+            minPrice += exp(-Rate * EndTime) * vecContinue[j] / NbSim;
+        }
     std::cout << "[LSLaguerre] Minimal price (European Payoff): " << minPrice << std::endl;
+    }
+    else
+    {
+        for (size_t j = 0; j < NbSim; j++)
+        {
+            vecContinue[j] = (*payoff)(VecPaths[j]->GetValues());
+            vecOptiTime[j] = EndTime;
+            minPrice += vecContinue[j] * exp(-Rate * EndTime) / NbSim;
+        }
+        std::cout << "[LSLaguerre] Minimal price (European Payoff): " << minPrice << std::endl;
+    }
+   
 
 
     // Loop on the exercise dates backwards
     std::cout << "[LSLaguerre] Looping on observation dates ..." << std::endl;
-    for (int idx =  static_cast<int>(VecTimes.size()) - 1; idx >= 0; idx--)
+    for (int idx =  static_cast<int>(VecTimes.size()) - 2; idx >= 0; idx--)
     {
         // Retrieve the observation date
         double t = VecTimes[idx];
         std::cout << "[LSLaguerre] Running computations for t = " << t << std::endl;
 
-        // Case where the payoff is evaluated at maturity
-        if (t == EndTime)
-        {
-            continue;
-        }
-
         // Compute exercise value
         std::cout << "[LSLaguerre] Computing immediate exercise values ..." << std::endl;
-        for (size_t j = 0; j < NbSim; j++)
+        if (ControlVariate)
         {
-            vecExercise[j] = (*payoff)(VecPaths[j]->GetValuesUpToT(t));
+
+            // Compute new Control Variate expected valued
+            double cvExpectation = ComputeCVExpectation(
+                vecSpots, vecW, payoff->GetStrike(), Rate, Undl->GetMatCov(), t, payoff
+            );
+            for (size_t j = 0; j < NbSim; j++)
+            {
+                std::vector<double> vecControlVariable = {vecControlVariate[j][idx]};
+                vecUpToT[j] = VecPaths[j]->GetValuesUpToT(t);
+                vecExercise[j] = (*payoff)(vecUpToT[j]) - (*payoff)(vecControlVariable)
+                                + cvExpectation * exp(Rate * t);
+            }
         }
-        
+        else
+        {
+            for (size_t j = 0; j < NbSim; j++)
+            {
+                vecUpToT[j] = VecPaths[j]->GetValuesUpToT(t);
+                vecExercise[j] = (*payoff)(vecUpToT[j]);
+            }
+        }
+
         // Preliminary computation for the Conditional Expectation Approximation
         std::cout << "[LSLaguerre] Alpha preliminary computations ..." << std::endl;
-        for (size_t i = 0; i < (vecAlpha).size(); i++)
+
+        // OLS Variables
+        std::vector< std::vector<double> > vecY(NbSim, std::vector<double>(1, 0.0));
+        std::vector< std::vector<double> > vecX(NbSim, std::vector<double>(3, 0.0));
+        
+        // Filling the vectors
+        // Update the values
+        for (size_t j = 0; j < NbSim; j++)
         {
-            std::cout << "[LSLaguerre] Preliminary computations for "
-                    + std::to_string(i) + "-th order polynomial ..." << std::endl;
+            // Fill the target values
+            vecY[j][0] = (*payoff)(vecUpToT[j]) * exp(-Rate * (vecOptiTime[j] - t));
+            Xj = VecPaths[j]->GetValue(t);
 
-            // Clean Previous Values
-            vecSumPiYj[i][0] = 0.0;
-            for (size_t k = 0; k < (vecAlpha).size(); k++)
+            // Fill the regressors
+            for (int k = 0; k < vecAlpha.size(); k++)
             {
-                vecHil[i][k] = 0.0;
+                switch(k)
+                {
+                    case 0:
+                        vecX[j][k] = Order0Poly(Xj);
+                        break;
+                    case 1:
+                        vecX[j][k] = Order1Poly(Xj);
+                        break;
+                    case 2:
+                        vecX[j][k] = Order2Poly(Xj);
+                        break;
+                    default:
+                        throw std::runtime_error("Polynomial of order " + std::to_string(k) + "not supported.");
+                }
             }
-
-            // Update the values
-            /* For each order of the polynomial, we compute
-                - The sum of Yj Pi(xj) involving the discounted value of optimal continuation value.
-                - The coefficients Hil: Sum of the product polynomial of order i and each of the others 
-                    from order 0 to L (here 3). */
-            switch(i)
-            {
-                case 0:
-                    for (size_t j = 0; j < NbSim; j++)
-                    {
-                        vecUpToT[j] = VecPaths[j]->GetValuesUpToT(t);
-                        Yj = (*payoff)(vecUpToT[j]) * exp(-rate * (vecOptiTime[j] - t));
-                        Xj = VecPaths[j]->GetValue(t);
-                        vecSumPiYj[i][0] += Yj * Order0Poly(Xj);
-                        for (size_t k = 0; k < (vecAlpha).size(); k++)
-                        {
-                            switch(k)
-                            {
-                                case 0:
-                                    vecHil[i][k] += Order0Poly(Xj) * Order0Poly(Xj);
-                                    break;
-                                case 1:
-                                    vecHil[i][k] += Order0Poly(Xj) * Order1Poly(Xj);
-                                    break;
-                                case 2:
-                                    vecHil[i][k] += Order0Poly(Xj) * Order2Poly(Xj);
-                                    break;
-                                default:
-                                    throw std::runtime_error("Order not supported.");
-                            }
-                        }
-                    }
-                    break;
-                case 1:
-                    for (size_t j = 0; j < NbSim; j++)
-                    {
-                        Yj = (*payoff)(vecUpToT[j]) * exp(-rate * (vecOptiTime[j] - t));
-                        vecSumPiYj[i][0] += Yj * Order1Poly(VecPaths[j]->GetValue(t));
-                        for (size_t k = 0; k < (vecAlpha).size(); k++)
-                        {
-                            switch(k)
-                            {
-                                case 0:
-                                    vecHil[i][k] += Order1Poly(Xj) * Order0Poly(Xj);
-                                    break;
-                                case 1:
-                                    vecHil[i][k] += Order1Poly(Xj) * Order1Poly(Xj);
-                                    break;
-                                case 2:
-                                    vecHil[i][k] += Order1Poly(Xj) * Order2Poly(Xj);
-                                    break;
-                                default:
-                                    throw std::runtime_error("Order not supported.");
-                            }
-                        }
-                    }
-                    break;
-                case 2:
-                    for (size_t j = 0; j < NbSim; j++)
-                    {
-                        Yj = (*payoff)(vecUpToT[j]) * exp(-rate * (vecOptiTime[j] - t));
-                        vecSumPiYj[i][0] += Yj * Order2Poly(VecPaths[j]->GetValue(t));
-                        for (size_t k = 0; k < (vecAlpha).size(); k++)
-                        {
-                            switch(k)
-                            {
-
-                                case 0:
-                                    vecHil[i][k] += Order2Poly(Xj) * Order0Poly(Xj);
-                                    break;
-                                case 1:
-                                    vecHil[i][k] += Order2Poly(Xj) * Order1Poly(Xj);
-                                    break;
-                                case 2:
-                                    vecHil[i][k] += Order2Poly(Xj) * Order2Poly(Xj);
-                                    break;
-                                default:
-                                    throw std::runtime_error("Order not supported.");
-                            }
-                        }
-                    }
-                    break;
-                default:
-                    throw std::runtime_error("Polynomial of order " + std::to_string(i) + "not supported.");
-            }   
         }
+
+        // Converting to matrivces
+        Matrix Y = Matrix(vecY);
+        Matrix X = Matrix(vecX);
+
         std::cout << "[LSLaguerre] Preliminary computations completed!" << std::endl;
 
         /* Now that we have all the coefficients to solve the linear systemn we determine alphas */
         
-        // Convert Hil into a matrix to perform Matrix Inversion and solve for Alphas
-        Matrix H = Matrix(vecHil);
-        Matrix MatPiYj = Matrix(vecSumPiYj);
-
-        // Sanity check for invertibility
-        // std::cout << "[LSLaguerre] Matrix Determinant: " << H.determinant() << std::endl;
-        // H.print();
-
         // Compute the optimal alphas
-        Matrix MatColAlphas = (H.inverse()).matrix_product(MatPiYj);
+        Matrix MatColAlphas = (
+            X.transpose().matrix_product(X)
+        ).InverseLU().matrix_product(
+            X.transpose().matrix_product(Y)
+        );
 
 
         // Compute the optimal decision rule: (immediate exercise > conditional expectation)
@@ -243,8 +267,9 @@ double LSLaguerrePoly::Price(Payoff* payoff, bool ControlVariate)
     std::cout << "[LSLaguerre] Averaging Discounted Optimal Exercise Values ..." << std::endl;
     for (size_t j = 0; j < NbSim; j++)
     {
-        price += (1 / NbSim) * vecContinue[j] * exp(-rate * (vecOptiTime[j]));
+        VecPrices.push_back((1 / NbSim) * vecContinue[j] * exp(-Rate * (vecOptiTime[j])));
+        price += (1 / NbSim) * vecContinue[j] * exp(-Rate * (vecOptiTime[j]));
     }
 
-    return 100 * price;
+    return price;
 }
