@@ -1,8 +1,17 @@
 #include "LSStandard.h"
 #include "Output.h"
 #include "Matrix.h"
+#include "Tools.h"
 #include <iostream>
 #include <cmath>
+#include <numeric>
+
+
+// Helper
+constexpr double EPSILON = 1e-5;
+auto is_close = [](double a, double b) {
+    return std::fabs(a - b) < EPSILON;
+};
 
 // Constructor
 LSStandard::LSStandard(
@@ -52,32 +61,103 @@ double LSStandard::Price(Payoff* payoff, bool ControlVariate)
     std::vector<double> vecOptiTime(NbSim, 0.0);            // Vector of optimal times exercise
     double price = 0.0;
 
+    // Control Variate Variables
+    std::vector<double> vecIdx;
+    std::vector< std::vector<double> > vecControlVariate(NbSim);
+    std::vector<double> vecW = Undl->GetWeights();
+    std::vector<double> vecSpots = Undl->GetSpots();
+
     // Optimisation variables
     double Yj;
     double Xj;
     std::vector< std::vector<double> > vecUpToT(NbSim);
     std::vector<double> vecAlpha(Order, 0.0);                                         // Vector for the alpha coefficients
-    std::vector< std::vector<double> > vecSumPiYj(Order, std::vector<double>(1, 0.0));  // Vector containing the sum of Yj * Pi(xj)
-    std::vector< std::vector<double> > vecHil(Order, std::vector<double>(Order, 0.0));      // Matrix of Hij coefficients
+    
 
     // Check whether simulations exist or if we need to simulate
     if (VecPaths.size() == 0)
     {
+        Undl->ClearPaths();
         std::cout << "[LSStandard] Simulating trajectories ..." << std::endl;
         Simulate();
         std::cout << "[LSStandard] Simulation completed!" << std::endl;
     }
 
+
+    // Compute Control Variate if necessary
+    if(ControlVariate)
+    {
+        // Retrieve the simulations and simulate the control variates
+        std::vector<double> vecFindIdx = VecPaths[0]->GetTimes();
+        for (int t = 0; t < static_cast<int>(NbSteps); t++)
+        {        
+            for (double target : VecTimes)
+            {
+                if (is_close(vecFindIdx[t], target))
+                {
+                    vecIdx.push_back(t);
+                    std::cout << vecIdx.back() << std::endl;
+                    std::cout << "Pushed" << std::endl;
+                    break;
+                }
+            }
+        }
+        vecIdx.push_back(NbSteps);
+
+        // Reconstruct the control variable values at each time step
+        std::vector< std::vector < std::vector<double> > > vecSimulations = Undl->ReturnSimulations();
+        for (int t = 0; t < vecIdx.size(); t++)
+        {
+            double idx = vecIdx[t];
+            std::cout << idx << std::endl;
+            for (size_t j = 0; j < NbSim; j++)
+            {
+                std::vector<double> vecLogSpot(vecW.size(), 0.0);
+                for (size_t k = 0; k < vecW.size(); k++)
+                {
+                    vecLogSpot[k] = log(vecSimulations[j][k][idx]);
+                }
+                double logspot = std::inner_product(vecW.begin(), vecW.end(), vecLogSpot.begin(), 0.0);
+                vecControlVariate[j].push_back(exp(logspot));
+            }
+        }
+    }
+    std::cout << "Size " << vecControlVariate[0].size() << std::endl;
+
+
     // Initialisation of the Optimal Exercise @ Values
     std::cout << "[LSStandard] Initialising the optimal times/values." << std::endl;
     double minPrice = 0.0;
-    for (size_t j = 0; j < NbSim; j++)
+    if (ControlVariate)
     {
-        vecContinue[j] = (*payoff)(VecPaths[j]->GetValues());
-        vecOptiTime[j] = EndTime;
-        minPrice += vecContinue[j] * exp(-Rate * EndTime) / NbSim;
-    }
+        // Compute Control Variate Expectation
+        double cvExpectation = ComputeCVExpectation(
+            vecSpots, vecW, payoff->GetStrike(), Rate, Undl->GetMatCov(), EndTime, payoff
+        );
+
+
+        for (size_t j = 0; j < NbSim; j++)
+        {
+            std::vector<double> vecControlVariable = {vecControlVariate[j][vecIdx.size()-1]};
+            vecContinue[j] = (*payoff)(VecPaths[j]->GetValues()) - (*payoff)(vecControlVariable)
+                             + cvExpectation * exp(Rate * EndTime);
+            vecOptiTime[j] = EndTime;
+            minPrice += exp(-Rate * EndTime) * vecContinue[j] / NbSim;
+        }
     std::cout << "[LSStandard] Minimal price (European Payoff): " << minPrice << std::endl;
+    }
+    else
+    {
+        for (size_t j = 0; j < NbSim; j++)
+        {
+            vecContinue[j] = (*payoff)(VecPaths[j]->GetValues());
+            vecOptiTime[j] = EndTime;
+            minPrice += vecContinue[j] * exp(-Rate * EndTime) / NbSim;
+        }
+        std::cout << "[LSStandard] Minimal price (European Payoff): " << minPrice << std::endl;
+    }
+   
+
 
     // Loop on the exercise dates backwards
     std::cout << "[LSStandard] Looping on observation dates ..." << std::endl;
@@ -89,11 +169,30 @@ double LSStandard::Price(Payoff* payoff, bool ControlVariate)
 
         // Compute exercise value
         std::cout << "[LSStandard] Computing immediate exercise values ..." << std::endl;
-        for (size_t j = 0; j < NbSim; j++)
+        if (ControlVariate)
         {
-            vecUpToT[j] = VecPaths[j]->GetValuesUpToT(t);
-            vecExercise[j] = (*payoff)(vecUpToT[j]);
+
+            // Compute new Control Variate expected valued
+            double cvExpectation = ComputeCVExpectation(
+                vecSpots, vecW, payoff->GetStrike(), Rate, Undl->GetMatCov(), t, payoff
+            );
+            for (size_t j = 0; j < NbSim; j++)
+            {
+                std::vector<double> vecControlVariable = {vecControlVariate[j][idx]};
+                vecUpToT[j] = VecPaths[j]->GetValuesUpToT(t);
+                vecExercise[j] = (*payoff)(vecUpToT[j]) - (*payoff)(vecControlVariable)
+                                + cvExpectation * exp(Rate * t);
+            }
         }
+        else
+        {
+            for (size_t j = 0; j < NbSim; j++)
+            {
+                vecUpToT[j] = VecPaths[j]->GetValuesUpToT(t);
+                vecExercise[j] = (*payoff)(vecUpToT[j]);
+            }
+        }
+
         
         // Preliminary computation for the Conditional Expectation Approximation
         std::cout << "[LSStandard] Alpha preliminary computations ..." << std::endl;

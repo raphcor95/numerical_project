@@ -21,10 +21,10 @@ int main()
         double rate = 0.05;
         double vol = 0.1;
         double spot = 100;
-        double strike = 120.0;
+        double strike = 100;
         double startTime = 0;
         double endTime = 1;
-        double nbSim = 1000;
+        double nbSim = 10;
         size_t nbSteps = 100;
 
         // Generators
@@ -35,7 +35,8 @@ int main()
         double N = 3.0;
         std::vector<double> vecSpots(3, spot);
         std::vector<double> vecRates(3, rate);
-        std::vector<double> vecWeights = {1.0, 0.0, 0.0};
+        // std::vector<double> vecWeights = {1.0, 0.0, 0.0};
+        std::vector<double> vecWeights = {0.2, 0.3, 0.5};
         Input* Inp = new Input();
         Matrix* matCov = Inp->CSV2Mat("Inputs/matCov.csv");
 
@@ -43,8 +44,8 @@ int main()
         bool ControlVariate = false;
 
         // MultiAsset Path Generator
-        // RandomProcess* BSEulerMulti = new BSEulerND(Norm, vecSpots, vecRates, matCov);
-        RandomProcess* BSEulerMulti = new BSEulerNDAnti(Norm, vecSpots, vecRates, matCov);
+        RandomProcess* BSEulerMulti = new BSEulerND(Norm, vecSpots, vecRates, matCov);
+        // RandomProcess* BSEulerMulti = new BSEulerNDAnti(Norm, vecSpots, vecRates, matCov);
         Underlying* myBasket = new Basket(BSEulerMulti, vecSpots[0], vecWeights);
 
         // Longstaff Schwarz Pricer - Laguerre Polynomials
@@ -52,36 +53,34 @@ int main()
         // std::vector<double> vecTimes = {1.0};
         int order = 3;
         // LongstaffSchwarz* PricerLS = new LSLaguerrePoly(myBasket, vecTimes, nbSim,
-        //                             startTime, endTime, nbSteps);
+        //                             startTime, endTime, nbSteps, rate);
         LongstaffSchwarz* PricerLS = new LSStandard(myBasket, vecTimes, nbSim,
                                         startTime, endTime, nbSteps, order, rate);
 
 
-        PricerLS->Simulate();
-        const std::vector<SinglePath*>& vecPaths = PricerLS->ReturnPaths();
+        // PricerLS->Simulate();
+        // const std::vector<SinglePath*>& vecPaths = PricerLS->ReturnPaths();
 
-        // Outputting the simulations
-        std::vector< std::vector<double> > vecSim;
-        for (size_t k = 0; k < nbSim; k++)
-        {
-            vecSim.push_back(vecPaths[k]->GetValues());
-        }
+        // // Outputting the simulations
+        // std::vector< std::vector<double> > vecSim;
+        // for (size_t k = 0; k < nbSim; k++)
+        // {
+        //     vecSim.push_back(vecPaths[k]->GetValues());
+        // }
 
-        // Outputting the results for visualisation
-        Output* Out = new Output();
-        Out->Vec2CSV(vecSim, "Outputs/LSBasket_Simulations.csv");
-        std::cout << "Outputting the results in: Outputs/LSBasket_Simulations.csv" << std::endl;
+        // // Outputting the results for visualisation
+        // Output* Out = new Output();
+        // Out->Vec2CSV(vecSim, "Outputs/LSBasket_Simulations.csv");
+        // std::cout << "Outputting the results in: Outputs/LSBasket_Simulations.csv" << std::endl;
         
         // Payoff
-        // Payoff* payoff = new EuropeanCall(strike);
-        Payoff* payoff = new EuropeanPut(strike);
-        // double BSPrice = BSCall(spot, strike, vol, rate, endTime);
-        double BSPrice = BSPut(spot, strike, vol, rate, endTime);
+        Payoff* payoff = new EuropeanCall(strike);
+        // Payoff* payoff = new EuropeanPut(strike);
+        double BSPrice = BSCall(spot, strike, vol, rate, endTime);
+        // double BSPrice = BSPut(spot, strike, vol, rate, endTime);
         double price = PricerLS->Price(payoff, ControlVariate);
         std::cout << "BS Price of the Bermudan Option: " << price << std::endl;
         std::cout << "BS Price of the European Option: " << BSPrice << std::endl;
-
-
 
         std::cout << "Execution Successful!" << std::endl;
 
