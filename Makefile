@@ -13,7 +13,7 @@ CXXFLAGS = -std=c++17 -Wall \
 			   -I./Processes/Underlyings
 
 
-all: test_random test_pde test_proc test_mc
+all: test_random test_pde test_proc test_mc test_con_mc test_con_ls
 
 
 # ------------------------------
@@ -203,6 +203,50 @@ CON_MC_OBJS = $(CON_MC_SRCS:.cpp=.o)
 test_con_mc: $(CON_MC_OBJS)
 	$(CXX) $(CXXFLAGS) -o $@ $(CON_MC_OBJS)
 
+
+
+
+# Longstaff Schwarz ----------------------------------------------
+CON_LS_SRCS = ConvergenceStudyLS.cpp \
+			RandomGenerators/RandomGenerator.cpp \
+			RandomGenerators/UniformGenerators/EcuyerCombined.cpp \
+			RandomGenerators/UniformGenerators/LinearCongruential.cpp \
+			RandomGenerators/UniformGenerators/PseudoGenerator.cpp \
+			RandomGenerators/UniformGenerators/UniformGenerator.cpp \
+			RandomGenerators/ContinuousGenerators/ContinuousGenerator.cpp \
+			RandomGenerators/ContinuousGenerators/Normal.cpp \
+			Processes/SinglePath.cpp \
+			Processes/RandomProcess.cpp \
+			Processes/BSEuler1D.cpp \
+			Processes/BlackScholes1D.cpp \
+			Processes/BSEulerND.cpp \
+			Processes/BlackScholesND.cpp \
+			Processes/BSEulerNDAnti.cpp \
+			Processes/Underlyings/Underlying.cpp \
+			Processes/Underlyings/Basket.cpp \
+			Pricers/Pricer.cpp \
+			Pricers/LongstaffSchwarz/LongstaffSchwarz.cpp \
+			Pricers/LongstaffSchwarz/LSStandard.cpp \
+			Pricers/LongstaffSchwarz/LSLaguerrePoly.cpp \
+			Payoffs/Payoff.cpp \
+			Payoffs/EuropeanCall.cpp \
+			Payoffs/EuropeanPut.cpp \
+			Utils/Input.cpp \
+			Utils/Output.cpp \
+			Utils/Tools.cpp \
+			RandomGenerators/QuasiRandomGenerators/QuasiRandom.cpp \
+		    RandomGenerators/QuasiRandomGenerators/LDSequences/LDSequence.cpp \
+		    RandomGenerators/QuasiRandomGenerators/LDSequences/HaltonVdC.cpp \
+		    RandomGenerators/QuasiRandomGenerators/QuasiRandomNormal/QuasiRandomNormal.cpp \
+			Utils/Matrix.cpp
+
+CON_LS_OBJS = $(CON_LS_SRCS:.cpp=.o)
+
+test_con_ls: $(CON_LS_OBJS)
+	$(CXX) $(CXXFLAGS) -o $@ $(CON_LS_OBJS)
+
+
+
 # Pattern rule to compile .cpp to .o
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
@@ -224,7 +268,10 @@ clean_ls:
 clean_mc:
 	rm -f $(MC_OBJS) test_mc
 
-clean_mon_mc:
+clean_con_mc:
 	rm -f $(CON_MC_OBJS) test_con_mc
 
-clean: clean_random clean_pde clean_proc clean_ls clean_mc clean_mon_mc
+clean_con_ls:
+	rm -f $(CON_MC_OBJS) test_con_ls
+
+clean: clean_random clean_pde clean_proc clean_ls clean_mc clean_con_mc clean_con_ls
