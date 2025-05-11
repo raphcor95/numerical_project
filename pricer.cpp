@@ -11,7 +11,6 @@
 #include "../Processes/BSEulerNDAnti.h"
 #include "../Processes/Underlyings/Basket.h"
 #include "../Utils/Input.h"
-// #include "../Utils/Output.h"
 #include "../Utils/Tools.h"
 
 int main() {
@@ -59,7 +58,6 @@ int main() {
     Payoff* payoffPut = new EuropeanPut(strike);
     Payoff* payoffCall = new EuropeanCall(strike);
     
-    // Output* Out = new Output();
     Underlying* basketToUse;
     Payoff* payoffToUse;
     std:: string method_to_display = "";
@@ -101,9 +99,13 @@ int main() {
     // ===========================================
 
     // === Display ===
+    std::cout << "" << std::endl;
+    std::cout << "" << std::endl;
     std::cout << "You priced a " << payoffType << ", Strike: " << strike << ", Maturity: " << endTime << "Y." << std::endl;
     std::cout << "You choosed the " << method_to_display << " methodology." << std::endl;
     std::cout << "Option price: " << averagePrice << std::endl;
+    std::cout << "" << std::endl;
+    std::cout << "" << std::endl;
     // ===========================================
 
     return 0;
