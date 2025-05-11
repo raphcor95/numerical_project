@@ -24,8 +24,8 @@ int main()
         double strike = 100;
         double startTime = 0;
         double endTime = 1;
-        double nbSim = 10;
-        size_t nbSteps = 100;
+        double nbSim = 10000;
+        size_t nbSteps = 252;
 
         // Generators
         UniformGenerator* Unif = new EcuyerCombined();
@@ -36,12 +36,12 @@ int main()
         std::vector<double> vecSpots(3, spot);
         std::vector<double> vecRates(3, rate);
         // std::vector<double> vecWeights = {1.0, 0.0, 0.0};
-        std::vector<double> vecWeights = {0.2, 0.3, 0.5};
+        std::vector<double> vecWeights = {0.5, 0.25, 0.25};
         Input* Inp = new Input();
         Matrix* matCov = Inp->CSV2Mat("Inputs/matCov.csv");
 
         // Control Variate
-        bool ControlVariate = false;
+        bool ControlVariate = true;
 
         // MultiAsset Path Generator
         RandomProcess* BSEulerMulti = new BSEulerND(Norm, vecSpots, vecRates, matCov);
@@ -52,8 +52,8 @@ int main()
         std::vector<double> vecTimes = {0.2, 0.4, 0.6, 1.0};
         // std::vector<double> vecTimes = {1.0};
         int order = 3;
-        LongstaffSchwarz* PricerLS = new LSLaguerrePoly(myBasket, vecTimes, nbSim,
-                                    startTime, endTime, nbSteps, rate);
+        // LongstaffSchwarz* PricerLS = new LSLaguerrePoly(myBasket, vecTimes, nbSim,
+        //                             startTime, endTime, nbSteps, rate);
         LongstaffSchwarz* PricerLS = new LSStandard(myBasket, vecTimes, nbSim,
                                         startTime, endTime, nbSteps, order, rate);
 
