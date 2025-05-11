@@ -30,7 +30,7 @@ int main() {
 
     std::vector<double> vecSpots(3, spot);
     std::vector<double> vecRates(3, rate);
-    std::vector<double> vecWeights = {1, 0, 0};
+    std::vector<double> vecWeights = {0.5, 0.25, 0.25};
 
     Input* Inp = new Input();
     Matrix* matCov = Inp->CSV2Mat("Inputs/matCov.csv");
@@ -80,11 +80,11 @@ int main() {
         delete mc;
     };
     // === Output the simulations ===
-    Out->Vec2CSV(allPricesMCCall, "Outputs/MonteCarlo_Simulations_Convergence_Call.csv");
-    std::cout << "Outputting the results of Monte Carlo for a Call in: Outputs/MonteCarlo_Simulations_Convergence_Call.csv" << std::endl;
+    Out->Vec2CSV(allPricesMCCall, "Outputs/MonteCarlo_Simulations_Convergence_Call_Basket.csv");
+    std::cout << "Outputting the results of Monte Carlo for a Call in: Outputs/MonteCarlo_Simulations_Convergence_Call_Basket.csv" << std::endl;
 
-    Out->Vec2CSV(allPricesMCPut, "Outputs/MonteCarlo_Simulations_Convergence_Put.csv");
-    std::cout << "Outputting the results of Monte Carlo for a Put in: Outputs/MonteCarlo_Simulations_Convergence_Put.csv" << std::endl;
+    Out->Vec2CSV(allPricesMCPut, "Outputs/MonteCarlo_Simulations_Convergence_Put_Basket.csv");
+    std::cout << "Outputting the results of Monte Carlo for a Put in: Outputs/MonteCarlo_Simulations_Convergence_Put_Basket.csv" << std::endl;
     // ==========================================================================================================
 
 
@@ -111,11 +111,11 @@ int main() {
         delete mc;
     };
     // === Output the simulations ===
-    Out->Vec2CSV(allPricesMCCall, "Outputs/MonteCarlo_ControlVariate_Simulations_Convergence_Call.csv");
-    std::cout << "Outputting the results of Monte Carlo with Control Variate for a Call in: Outputs/MonteCarlo_ControlVariate_Simulations_Convergence_Call.csv" << std::endl;
+    Out->Vec2CSV(allPricesMCCall, "Outputs/MonteCarlo_ControlVariate_Simulations_Convergence_Call_Basket.csv");
+    std::cout << "Outputting the results of Monte Carlo with Control Variate for a Call in: Outputs/MonteCarlo_ControlVariate_Simulations_Convergence_Call_Basket.csv" << std::endl;
     
-    Out->Vec2CSV(allPricesMCPut, "Outputs/MonteCarlo_ControlVariate_Simulations_Convergence_Put.csv");
-    std::cout << "Outputting the results of Monte Carlo with Control Variate for a Put in: Outputs/MonteCarlo_ControlVariate_Simulations_Convergence_Put.csv" << std::endl;
+    Out->Vec2CSV(allPricesMCPut, "Outputs/MonteCarlo_ControlVariate_Simulations_Convergence_Put_Basket.csv");
+    std::cout << "Outputting the results of Monte Carlo with Control Variate for a Put in: Outputs/MonteCarlo_ControlVariate_Simulations_Convergence_Put_Basket.csv" << std::endl;
     // ==========================================================================================================
 
     
@@ -142,11 +142,11 @@ int main() {
         delete mc;
     };
     // === Output the simulations ===
-    Out->Vec2CSV(allPricesMCCall, "Outputs/MonteCarlo_Antithetic_Simulations_Convergence_Call.csv");
-    std::cout << "Outputting the results of Monte Carlo with Antithetic for a Call in: Outputs/MonteCarlo_Antithetic_Simulations_Convergence_Call.csv" << std::endl;
+    Out->Vec2CSV(allPricesMCCall, "Outputs/MonteCarlo_Antithetic_Simulations_Convergence_Call_Basket.csv");
+    std::cout << "Outputting the results of Monte Carlo with Antithetic for a Call in: Outputs/MonteCarlo_Antithetic_Simulations_Convergence_Call_Basket.csv" << std::endl;
     
-    Out->Vec2CSV(allPricesMCPut, "Outputs/MonteCarlo_Antithetic_Simulations_Convergence_Put.csv");
-    std::cout << "Outputting the results of Monte Carlo with Antithetic for a Put in: Outputs/MonteCarlo_Antithetic_Simulations_Convergence_Put.csv" << std::endl;
+    Out->Vec2CSV(allPricesMCPut, "Outputs/MonteCarlo_Antithetic_Simulations_Convergence_Put_Basket.csv");
+    std::cout << "Outputting the results of Monte Carlo with Antithetic for a Put in: Outputs/MonteCarlo_Antithetic_Simulations_Convergence_Put_Basket.csv" << std::endl;
     // ==========================================================================================================
 
 
@@ -175,11 +175,11 @@ int main() {
         delete mc;
     };
     // === Output the simulations ===
-    Out->Vec2CSV(allPricesMCCall, "Outputs/MonteCarlo_Antithetic_ControlVariate_Simulations_Convergence_Call.csv");
-    std::cout << "Outputting the results of Monte Carlo with Antithetic and Control Variate for a Call in: Outputs/MonteCarlo_Antithetic_ControlVariate_Simulations_Convergence_Call.csv" << std::endl;
+    Out->Vec2CSV(allPricesMCCall, "Outputs/MonteCarlo_Antithetic_ControlVariate_Simulations_Convergence_Call_Basket.csv");
+    std::cout << "Outputting the results of Monte Carlo with Antithetic and Control Variate for a Call in: Outputs/MonteCarlo_Antithetic_ControlVariate_Simulations_Convergence_Call_Basket.csv" << std::endl;
     
-    Out->Vec2CSV(allPricesMCPut, "Outputs/MonteCarlo_Antithetic_ControlVariate_Simulations_Convergence_Put.csv");
-    std::cout << "Outputting the results of Monte Carlo with Antithetic and Control Variate for a Put in: Outputs/MonteCarlo_Antithetic_ControlVariate_Simulations_Convergence_Put.csv" << std::endl;
+    Out->Vec2CSV(allPricesMCPut, "Outputs/MonteCarlo_Antithetic_ControlVariate_Simulations_Convergence_Put_Basket.csv");
+    std::cout << "Outputting the results of Monte Carlo with Antithetic and Control Variate for a Put in: Outputs/MonteCarlo_Antithetic_ControlVariate_Simulations_Convergence_Put_Basket.csv" << std::endl;
     // ==========================================================================================================
 
 
@@ -208,11 +208,11 @@ int main() {
         delete mc;
     };
     // === Output the simulations ===
-    Out->Vec2CSV(allPricesMCCall, "Outputs/Quasi_MonteCarlo_Simulations_Convergence_Call.csv");
-    std::cout << "Outputting the results of Quasi Monte Carlo for a Call in: Outputs/Quasi_MonteCarlo_Simulations_Convergence_Call.csv" << std::endl;
+    Out->Vec2CSV(allPricesMCCall, "Outputs/Quasi_MonteCarlo_Simulations_Convergence_Call_Basket.csv");
+    std::cout << "Outputting the results of Quasi Monte Carlo for a Call in: Outputs/Quasi_MonteCarlo_Simulations_Convergence_Call_Basket.csv" << std::endl;
 
-    Out->Vec2CSV(allPricesMCPut, "Outputs/Quasi_MonteCarlo_Simulations_Convergence_Put.csv");
-    std::cout << "Outputting the results of Quasi Monte Carlo for a Put in: Outputs/Quasi_MonteCarlo_Simulations_Convergence_Put.csv" << std::endl;
+    Out->Vec2CSV(allPricesMCPut, "Outputs/Quasi_MonteCarlo_Simulations_Convergence_Put_Basket.csv");
+    std::cout << "Outputting the results of Quasi Monte Carlo for a Put in: Outputs/Quasi_MonteCarlo_Simulations_Convergence_Put_Basket.csv" << std::endl;
     // ==========================================================================================================
 
 
@@ -241,11 +241,11 @@ int main() {
         delete mc;
     };
     // === Output the simulations ===
-    Out->Vec2CSV(allPricesMCCall, "Outputs/Quasi_MonteCarlo_ControlVariate_Simulations_Convergence_Call.csv");
-    std::cout << "Outputting the results of Quasi Monte Carlo with Control Variate for a Call in: Outputs/Quasi_MonteCarlo_ControlVariate_Simulations_Convergence_Call.csv" << std::endl;
+    Out->Vec2CSV(allPricesMCCall, "Outputs/Quasi_MonteCarlo_ControlVariate_Simulations_Convergence_Call_Basket.csv");
+    std::cout << "Outputting the results of Quasi Monte Carlo with Control Variate for a Call in: Outputs/Quasi_MonteCarlo_ControlVariate_Simulations_Convergence_Call_Basket.csv" << std::endl;
 
-    Out->Vec2CSV(allPricesMCPut, "Outputs/Quasi_MonteCarlo_ControlVariate_Simulations_Convergence_Put.csv");
-    std::cout << "Outputting the results of Quasi Monte Carlo with Control Variate for a Put in: Outputs/Quasi_MonteCarlo_ControlVariate_Simulations_Convergence_Put.csv" << std::endl;
+    Out->Vec2CSV(allPricesMCPut, "Outputs/Quasi_MonteCarlo_ControlVariate_Simulations_Convergence_Put_Basket.csv");
+    std::cout << "Outputting the results of Quasi Monte Carlo with Control Variate for a Put in: Outputs/Quasi_MonteCarlo_ControlVariate_Simulations_Convergence_Put_Basket.csv" << std::endl;
     // ==========================================================================================================
 
     
@@ -274,11 +274,11 @@ int main() {
         delete mc;
     };
     // === Output the simulations ===
-    Out->Vec2CSV(allPricesMCCall, "Outputs/Quasi_MonteCarlo_Antithetic_Simulations_Convergence_Call.csv");
-    std::cout << "Outputting the results of Quasi Monte Carlo with Antithetic for a Call in: Outputs/Quasi_MonteCarlo_Antithetic_Simulations_Convergence_Call.csv" << std::endl;
+    Out->Vec2CSV(allPricesMCCall, "Outputs/Quasi_MonteCarlo_Antithetic_Simulations_Convergence_Call_Basket.csv");
+    std::cout << "Outputting the results of Quasi Monte Carlo with Antithetic for a Call in: Outputs/Quasi_MonteCarlo_Antithetic_Simulations_Convergence_Call_Basket.csv" << std::endl;
 
-    Out->Vec2CSV(allPricesMCPut, "Outputs/Quasi_MonteCarlo_Antithetic_Simulations_Convergence_Put.csv");
-    std::cout << "Outputting the results of Quasi Monte Carlo with Antithetic for a Put in: Outputs/Quasi_MonteCarlo_Antithetic_Simulations_Convergence_Put.csv" << std::endl;
+    Out->Vec2CSV(allPricesMCPut, "Outputs/Quasi_MonteCarlo_Antithetic_Simulations_Convergence_Put_Basket.csv");
+    std::cout << "Outputting the results of Quasi Monte Carlo with Antithetic for a Put in: Outputs/Quasi_MonteCarlo_Antithetic_Simulations_Convergence_Put_Basket.csv" << std::endl;
     // ==========================================================================================================
 
 
@@ -307,11 +307,11 @@ int main() {
         delete mc;
     };
     // === Output the simulations ===
-    Out->Vec2CSV(allPricesMCCall, "Outputs/Quasi_MonteCarlo_Antithetic_ControlVariate_Simulations_Convergence_Call.csv");
-    std::cout << "Outputting the results of Quasi Monte Carlo with Antithetic and Control Variate for a Call in: Outputs/Quasi_MonteCarlo_Antithetic_ControlVariate_Simulations_Convergence_Call.csv" << std::endl;
+    Out->Vec2CSV(allPricesMCCall, "Outputs/Quasi_MonteCarlo_Antithetic_ControlVariate_Simulations_Convergence_Call_Basket.csv");
+    std::cout << "Outputting the results of Quasi Monte Carlo with Antithetic and Control Variate for a Call in: Outputs/Quasi_MonteCarlo_Antithetic_ControlVariate_Simulations_Convergence_Call_Basket.csv" << std::endl;
 
-    Out->Vec2CSV(allPricesMCPut, "Outputs/Quasi_MonteCarlo_Antithetic_ControlVariate_Simulations_Convergence_Put.csv");
-    std::cout << "Outputting the results of Quasi Monte Carlo with Antithetic and Control Variate for a Put in: Outputs/Quasi_MonteCarlo_Antithetic_ControlVariate_Simulations_Convergence_Put.csv" << std::endl;
+    Out->Vec2CSV(allPricesMCPut, "Outputs/Quasi_MonteCarlo_Antithetic_ControlVariate_Simulations_Convergence_Put_Basket.csv");
+    std::cout << "Outputting the results of Quasi Monte Carlo with Antithetic and Control Variate for a Put in: Outputs/Quasi_MonteCarlo_Antithetic_ControlVariate_Simulations_Convergence_Put_Basket.csv" << std::endl;
     // ==========================================================================================================
 
     return 0;
