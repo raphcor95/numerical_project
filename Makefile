@@ -203,8 +203,42 @@ CON_MC_OBJS = $(CON_MC_SRCS:.cpp=.o)
 test_con_mc: $(CON_MC_OBJS)
 	$(CXX) $(CXXFLAGS) -o $@ $(CON_MC_OBJS)
 
+# Monte Carlo ----------------------------------------------
+PRICER_SRCS = pricer.cpp \
+			RandomGenerators/RandomGenerator.cpp \
+			RandomGenerators/UniformGenerators/EcuyerCombined.cpp \
+			RandomGenerators/UniformGenerators/LinearCongruential.cpp \
+			RandomGenerators/UniformGenerators/PseudoGenerator.cpp \
+			RandomGenerators/UniformGenerators/UniformGenerator.cpp \
+			RandomGenerators/ContinuousGenerators/ContinuousGenerator.cpp \
+			RandomGenerators/ContinuousGenerators/Normal.cpp \
+			Processes/SinglePath.cpp \
+			Processes/RandomProcess.cpp \
+			Processes/BSEuler1D.cpp \
+			Processes/BlackScholes1D.cpp \
+			Processes/BSEulerND.cpp \
+			Processes/BlackScholesND.cpp \
+			Processes/BSEulerNDAnti.cpp \
+			Processes/Underlyings/Underlying.cpp \
+			Processes/Underlyings/Basket.cpp \
+			Pricers/MonteCarlo/MonteCarlo.cpp \
+			Payoffs/Payoff.cpp \
+			Payoffs/EuropeanCall.cpp \
+			Payoffs/EuropeanPut.cpp \
+			Pricers/Pricer.cpp \
+			Utils/Input.cpp \
+			Utils/Output.cpp \
+			Utils/Tools.cpp \
+			RandomGenerators/QuasiRandomGenerators/QuasiRandom.cpp \
+		    RandomGenerators/QuasiRandomGenerators/LDSequences/LDSequence.cpp \
+		    RandomGenerators/QuasiRandomGenerators/LDSequences/HaltonVdC.cpp \
+		    RandomGenerators/QuasiRandomGenerators/QuasiRandomNormal/QuasiRandomNormal.cpp \
+			Utils/Matrix.cpp
 
+PRICER_OBJS = $(PRICER_SRCS:.cpp=.o)
 
+pricer: $(PRICER_OBJS)
+	$(CXX) $(CXXFLAGS) -o $@ $(PRICER_OBJS)
 
 # Longstaff Schwarz ----------------------------------------------
 CON_LS_SRCS = ConvergenceStudyLS.cpp \
@@ -274,4 +308,7 @@ clean_con_mc:
 clean_con_ls:
 	rm -f $(CON_MC_OBJS) test_con_ls
 
-clean: clean_random clean_pde clean_proc clean_ls clean_mc clean_con_mc clean_con_ls
+clean_pricer:
+	rm -f $(PRICER_OBJS) test_con_ls
+
+clean: clean_random clean_pde clean_proc clean_ls clean_mc clean_con_mc clean_con_ls clean_pricer
