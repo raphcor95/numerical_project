@@ -81,8 +81,12 @@ double MonteCarlo::Price(Payoff* payoff, bool ControlVariate) {
             SinglePath* Path = Undl->ReturnPath();
 
             // Retrieve simulation for the Control Variate variable
-            std::vector< std::vector<double> > vecSim = Undl->ReturnSimulations();
-            std::vector<double> vecSpotsFinal = Undl->ReturnSimulations()[i];
+            std::vector< std::vector<double> > vecSim = Undl->ReturnSimulation(i);
+            std::vector<double> vecSpotsFinal(vecW.size(), 0.0);
+            for (int k = 0; k < vecW.size(); k++)
+            {   
+                vecSpotsFinal[k] = vecSim[k][NbSteps-1];
+            }
             for (size_t d = 0; d < vecSpotsFinal.size(); d++)
             {
                 vecSpotsFinal[d] = log(vecSpotsFinal[d]);

@@ -47,13 +47,13 @@ void Basket::Simulate(double startTime, double endTime, size_t nbSteps)
     Path->AddValue(currVal);
 
     // Store the terminal values
-    std::vector<double> vecOut(VecWeights.size(), 0.0);
+    std::vector< std::vector<double> > vecOut(VecWeights.size());
 
     // Retrieve the trajectories
     for (size_t k = 0; k < VecWeights.size(); k++)
     {
         vecDiff[k] = Generator->GetPath(k)->GetValues();
-        vecOut[k] = Generator->GetPath(k)->GetValue(endTime);
+        vecOut[k] = Generator->GetPath(k)->GetValues();
     }
     
     // Store the terminal values

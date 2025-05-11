@@ -6,7 +6,7 @@ class Underlying
     protected:
         RandomProcess* Generator;
         SinglePath* Path;
-        std::vector< std::vector<double> > VecPaths;
+        std::vector< std::vector< std::vector<double> > >VecPaths;
         double InitVal;
         std::vector<double> VecWeights;
 
@@ -20,5 +20,6 @@ class Underlying
         std::vector<double>& GetWeights();
         std::vector<double> GetSpots();
         SinglePath* ReturnPath();
-        std::vector< std::vector<double> >& ReturnSimulations();
+        std::vector< std::vector< std::vector<double> > >& ReturnSimulations();
+        std::vector< std::vector<double> >& ReturnSimulation(size_t sim);
 };
