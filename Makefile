@@ -229,6 +229,9 @@ PRICER_SRCS = pricer.cpp \
 			Utils/Input.cpp \
 			Utils/Output.cpp \
 			Utils/Tools.cpp \
+			Pricers/LongstaffSchwarz/LongstaffSchwarz.cpp \
+			Pricers/LongstaffSchwarz/LSStandard.cpp \
+			Pricers/LongstaffSchwarz/LSLaguerrePoly.cpp \
 			RandomGenerators/QuasiRandomGenerators/QuasiRandom.cpp \
 		    RandomGenerators/QuasiRandomGenerators/LDSequences/LDSequence.cpp \
 		    RandomGenerators/QuasiRandomGenerators/LDSequences/HaltonVdC.cpp \
