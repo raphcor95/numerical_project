@@ -56,7 +56,7 @@ int main() {
     // === Compute Payoff option ===
     Payoff* payoff = new EuropeanCall(strike);
     // Payoff* payoff = new EuropeanPut(strike);
-    double final_payoff = mc->Price(payoff, true);
+    double final_payoff = mc->Price(payoff, false);
     double BSPrice = BSCall(spot, strike, 0.1, rate, endTime);
     // double BSPrice = BSPut(spot, strike, 0.1, rate, endTime);
     std::cout << "Option price: " << final_payoff << std::endl;

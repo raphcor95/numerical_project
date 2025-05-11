@@ -20,8 +20,8 @@ int main() {
     double endTime = 1.0;
 
     double spot = 100.0;
-    double strike = 120.0;
-    double rate = 0.20;
+    double strike = 100.0;
+    double rate = 0.05;
 
     size_t nbSteps = 252;
     std::vector<size_t> vecSim;
@@ -69,7 +69,8 @@ int main() {
         Underlying* myBasket = new Basket(BSEulerBasket, 100.0, vecWeights);
         MonteCarlo* mc = new MonteCarlo(myBasket, vecSim[nbSim], startTime, endTime, nbSteps, rate);
 
-        mc->Price(payoffCall, false);
+        double p = mc->Price(payoffCall, false);
+        std::cout << p << std::endl;
         allPricesMCCall[nbSim] = mc->VecPrices;
 
         mc->Price(payoffPut, false);
